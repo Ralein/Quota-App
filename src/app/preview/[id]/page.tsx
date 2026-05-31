@@ -5,6 +5,13 @@ import Link from 'next/link';
 import { useRouter, useParams } from 'next/navigation';
 import { getQuotationById } from '@/utils/db';
 import { Quotation } from '@/types';
+import {
+  ArrowLeft,
+  Edit,
+  MessageCircle,
+  Mail,
+  Printer
+} from 'lucide-react';
 
 export default function PreviewQuotation() {
   const router = useRouter();
@@ -30,7 +37,7 @@ export default function PreviewQuotation() {
   if (!mounted || !quotation) {
     return (
       <div className="flex h-[50vh] items-center justify-center">
-        <div className="w-10 h-10 border-3 border-white/10 rounded-full border-t-primary animate-spin"></div>
+        <div className="w-10 h-10 border-3 border-primary/20 rounded-full border-t-primary animate-spin"></div>
       </div>
     );
   }
@@ -84,34 +91,39 @@ export default function PreviewQuotation() {
       {/* Action bar (hidden in print) */}
       <div className="no-print glass-panel w-full max-w-3xl p-4 px-6 flex justify-between items-center flex-wrap gap-4">
         <div>
-          <Link href="/saved" className="text-sm font-semibold text-text-muted hover:text-text-main transition-colors duration-200">
-            ← Back to List
+          <Link href="/saved" className="flex items-center gap-1.5 text-sm font-semibold text-text-muted hover:text-text-main transition-colors duration-200">
+            <ArrowLeft size={16} />
+            Back to List
           </Link>
         </div>
         <div className="flex gap-2 flex-wrap">
           <Link
             href={`/create?id=${quotation.id}`}
-            className="px-4 py-2 rounded-lg text-xs font-bold border border-border-main text-text-main bg-white/2 hover:bg-white/5 transition-all duration-200"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold border border-border-main text-text-main bg-white/[0.02] hover:bg-white/5 transition-all duration-200"
           >
-            ✏️ Edit Document
+            <Edit size={14} />
+            Edit Document
           </Link>
           <button
             onClick={handleShareWhatsApp}
-            className="px-4 py-2 rounded-lg text-xs font-bold bg-[#25d366] hover:bg-[#20ba5a] text-white cursor-pointer transition-all duration-200"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold bg-[#25d366] hover:bg-[#20ba5a] text-white cursor-pointer transition-all duration-200"
           >
-            💬 Share WhatsApp
+            <MessageCircle size={14} />
+            Share WhatsApp
           </button>
           <button
             onClick={handleShareEmail}
-            className="px-4 py-2 rounded-lg text-xs font-bold bg-secondary/10 hover:bg-secondary/20 text-secondary border border-secondary/20 cursor-pointer transition-all duration-200"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold bg-secondary/10 hover:bg-secondary/20 text-secondary border border-secondary/20 cursor-pointer transition-all duration-200"
           >
-            📧 Email Client
+            <Mail size={14} />
+            Email Client
           </button>
           <button
             onClick={handlePrint}
-            className="px-4 py-2 rounded-lg text-xs font-bold bg-primary hover:bg-primary-hover text-white cursor-pointer transition-all duration-200"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold bg-primary hover:bg-primary-hover text-text-inverse cursor-pointer transition-all duration-200"
           >
-            🖨️ Print / Save PDF
+            <Printer size={14} />
+            Print / Save PDF
           </button>
         </div>
       </div>
@@ -263,7 +275,7 @@ export default function PreviewQuotation() {
 
         {/* A4 Sheet Footer (hidden on screen, visible on print pages) */}
         <div className="print-footer text-slate-500">
-          Generated via QuoteBuilder Pro | {quotation.company.name}
+          Generated via NexaQuote | {quotation.company.name}
         </div>
       </div>
     </div>
