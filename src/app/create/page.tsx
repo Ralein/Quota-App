@@ -14,6 +14,23 @@ import {
 } from '@/utils/db';
 import { convertNumberToWords } from '@/utils/numberToWords';
 import { Quotation, LineItem, Client, CompanyProfile } from '@/types';
+import {
+  FilePlus,
+  Edit,
+  Eye,
+  Save,
+  X,
+  ChevronUp,
+  ChevronDown,
+  UserPlus,
+  Trash2,
+  Plus,
+  Building2,
+  Phone,
+  Mail,
+  CreditCard,
+  MapPin
+} from 'lucide-react';
 
 const UNITS = ['Rmt', 'Nos', 'Sqft', 'Kg', 'Hr', 'Day', 'L.S', 'Set', 'Job', 'Box', 'Ltr'];
 
@@ -62,12 +79,10 @@ function CreateQuotationForm() {
   const autoSaveTimerRef = useRef<NodeJS.Timeout | null>(null);
   const stateRef = useRef({ lineItems, selectedClient, refNo, docType, docDate, subject, taxLabel, taxRate, taxEnabled, discountValue, discountType, terms, notes, docId, status });
 
-  // Update state ref on every state change to keep auto-saver accurate
   useEffect(() => {
     stateRef.current = { lineItems, selectedClient, refNo, docType, docDate, subject, taxLabel, taxRate, taxEnabled, discountValue, discountType, terms, notes, docId, status };
   }, [lineItems, selectedClient, refNo, docType, docDate, subject, taxLabel, taxRate, taxEnabled, discountValue, discountType, terms, notes, docId, status]);
 
-  // Load baseline configs
   useEffect(() => {
     setMounted(true);
     const compProfile = getCompanyProfile();
@@ -78,7 +93,6 @@ function CreateQuotationForm() {
     setClients(clientsList);
     setItemLibrary(library);
 
-    // Initial setup if editing
     if (editId) {
       const existing = getQuotationById(editId);
       if (existing) {
@@ -110,7 +124,6 @@ function CreateQuotationForm() {
     };
   }, [editId]);
 
-  // Setup fresh document defaults
   const setupNewDocument = (compProfile: CompanyProfile, clientsList: Client[]) => {
     const today = new Date().toISOString().split('T')[0];
     setDocId(`quote_${Date.now()}`);
@@ -138,7 +151,6 @@ function CreateQuotationForm() {
     }
   };
 
-  // Auto-save logic (runs every 30 seconds if we have a valid client)
   useEffect(() => {
     if (mounted) {
       autoSaveTimerRef.current = setInterval(() => {
@@ -150,16 +162,13 @@ function CreateQuotationForm() {
     };
   }, [mounted]);
 
-  // Trigger Doc Type reference change
   const handleTypeChange = (type: Quotation['type']) => {
     setDocType(type);
     if (!editId) {
-      // Auto increment only when creating a new quotation
       setRefNo(getNextRefNo(type));
     }
   };
 
-  // Line item manipulation
   const addRow = () => {
     const newItems = [...lineItems];
     newItems.push({
@@ -191,7 +200,6 @@ function CreateQuotationForm() {
     const updated = [...lineItems];
     const row = { ...updated[index], [field]: value };
     
-    // Auto calculate amount
     if (row.isLumpSum) {
       row.qty = null;
       row.rate = null;
@@ -238,7 +246,6 @@ function CreateQuotationForm() {
     setLineItems(updated);
   };
 
-  // Reorder buttons (Move Up / Down)
   const moveRow = (index: number, direction: 'up' | 'down') => {
     if (direction === 'up' && index === 0) return;
     if (direction === 'down' && index === lineItems.length - 1) return;
@@ -249,7 +256,6 @@ function CreateQuotationForm() {
     reordered[index] = reordered[targetIndex];
     reordered[targetIndex] = temp;
 
-    // Recalculate Sr. Nos
     const mapped = reordered.map((item, idx) => ({
       ...item,
       srNo: idx + 1
@@ -257,7 +263,6 @@ function CreateQuotationForm() {
     setLineItems(mapped);
   };
 
-  // Autocomplete Item selection helper
   const handleItemSelect = (index: number, entry: any) => {
     const updated = [...lineItems];
     updated[index].description = entry.description;
@@ -278,7 +283,6 @@ function CreateQuotationForm() {
     setActiveSuggestionRow(null);
   };
 
-  // Save new client inline
   const handleAddClientInline = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newClientName.trim()) return;
@@ -291,13 +295,11 @@ function CreateQuotationForm() {
       taxId: newClientTaxId
     });
 
-    // Refresh lists and select
     const updatedClients = getClients();
     setClients(updatedClients);
     setSelectedClient(newC);
     setIsClientModalOpen(false);
 
-    // Reset forms
     setNewClientName('');
     setNewClientPhone('');
     setNewClientEmail('');
@@ -318,7 +320,6 @@ function CreateQuotationForm() {
   
   const amountInWords = convertNumberToWords(total, profile?.currencySymbol);
 
-  // Active Save Function
   const handleSaveDocument = (e?: React.FormEvent, customStatus?: Quotation['status']) => {
     if (e) e.preventDefault();
     
@@ -348,7 +349,7 @@ function CreateQuotationForm() {
       subject: curr.subject,
       date: curr.docDate,
       status: docStatus,
-      company: profile, // Take profile snapshot
+      company: profile,
       client: curr.selectedClient,
       items: curr.lineItems,
       subtotal,
@@ -369,7 +370,6 @@ function CreateQuotationForm() {
 
     saveQuotation(quoteToSave);
 
-    // Save newly typed items to library automatically if they are new
     curr.lineItems.forEach(item => {
       const match = itemLibrary.find(e => e.description.toLowerCase() === item.description.toLowerCase());
       if (!match && item.description.trim() !== '') {
@@ -416,11 +416,16 @@ function CreateQuotationForm() {
 
   return (
     <div className="flex flex-col gap-6 w-full animate-fade-in">
-      <div className="mb-2">
-        <h1 className="text-3xl font-extrabold tracking-tight mb-1 text-text-main">
-          {editId ? '✏️ Edit Document' : '➕ Create Quotation / Bill'}
-        </h1>
-        <p className="text-text-muted text-sm">Draft quotations, invoices, or running bills with live computations.</p>
+      <div className="mb-2 flex items-center gap-3">
+        <div className="w-10 h-10 rounded-lg bg-primary/15 flex items-center justify-center text-primary">
+          {editId ? <Edit size={22} /> : <FilePlus size={22} />}
+        </div>
+        <div>
+          <h1 className="text-3xl font-extrabold tracking-tight mb-0.5 text-text-main">
+            {editId ? 'Edit Document' : 'Create Quotation / Bill'}
+          </h1>
+          <p className="text-text-muted text-sm">Draft quotations, invoices, or running bills with live computations.</p>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-[1.3fr_0.7fr] gap-8 items-start">
@@ -433,7 +438,7 @@ function CreateQuotationForm() {
             <div className="flex flex-col gap-5">
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-semibold text-text-muted">Document Type</label>
-                <div className="flex border border-border-main rounded-lg overflow-hidden bg-white/2 dark:bg-white/2 [data-theme=light]:bg-slate-900/2 w-full">
+                <div className="flex border border-border-main rounded-lg overflow-hidden bg-white/[0.02] w-full">
                   {(['quotation', 'running_bill', 'invoice'] as const).map(type => (
                     <button 
                       key={type}
@@ -441,7 +446,7 @@ function CreateQuotationForm() {
                       onClick={() => handleTypeChange(type)}
                       className={`flex-1 py-2.5 text-xs font-semibold uppercase tracking-wider border-r border-border-main last:border-r-0 hover:text-text-main hover:bg-white/5 transition-all duration-200 cursor-pointer ${
                         docType === type
-                          ? 'bg-primary text-white hover:bg-primary'
+                          ? 'bg-primary text-text-inverse hover:bg-primary'
                           : 'text-text-muted'
                       }`}
                     >
@@ -454,39 +459,18 @@ function CreateQuotationForm() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="flex flex-col gap-1.5">
                   <label htmlFor="refNo" className="text-xs font-semibold text-text-muted">Reference No. *</label>
-                  <input
-                    type="text"
-                    id="refNo"
-                    value={refNo}
-                    onChange={(e) => setRefNo(e.target.value)}
-                    required
-                    className="px-4 py-2.5 bg-white/2 dark:bg-white/2 [data-theme=light]:bg-slate-900/2 border border-border-main rounded-lg text-text-main text-sm transition-all duration-200 focus:border-border-focus focus:ring-3 focus:ring-primary/15 outline-none"
-                  />
+                  <input type="text" id="refNo" value={refNo} onChange={(e) => setRefNo(e.target.value)} required className="px-4 py-2.5 bg-white/[0.02] border border-border-main rounded-lg text-text-main text-sm transition-all duration-200 focus:border-border-focus focus:ring-3 focus:ring-primary/15 outline-none" />
                 </div>
 
                 <div className="flex flex-col gap-1.5">
                   <label htmlFor="docDate" className="text-xs font-semibold text-text-muted">Document Date *</label>
-                  <input
-                    type="date"
-                    id="docDate"
-                    value={docDate}
-                    onChange={(e) => setDocDate(e.target.value)}
-                    required
-                    className="px-4 py-2.5 bg-white/2 dark:bg-white/2 [data-theme=light]:bg-slate-900/2 border border-border-main rounded-lg text-text-main text-sm transition-all duration-200 focus:border-border-focus focus:ring-3 focus:ring-primary/15 outline-none"
-                  />
+                  <input type="date" id="docDate" value={docDate} onChange={(e) => setDocDate(e.target.value)} required className="px-4 py-2.5 bg-white/[0.02] border border-border-main rounded-lg text-text-main text-sm transition-all duration-200 focus:border-border-focus focus:ring-3 focus:ring-primary/15 outline-none" />
                 </div>
               </div>
 
               <div className="flex flex-col gap-1.5">
                 <label htmlFor="subject" className="text-xs font-semibold text-text-muted">Subject Line</label>
-                <input
-                  type="text"
-                  id="subject"
-                  value={subject}
-                  onChange={(e) => setSubject(e.target.value)}
-                  placeholder="e.g. Plumbing Installation Work or Quotation for Electrical Wiring"
-                  className="px-4 py-2.5 bg-white/2 dark:bg-white/2 [data-theme=light]:bg-slate-900/2 border border-border-main rounded-lg text-text-main text-sm transition-all duration-200 focus:border-border-focus focus:ring-3 focus:ring-primary/15 outline-none"
-                />
+                <input type="text" id="subject" value={subject} onChange={(e) => setSubject(e.target.value)} placeholder="e.g. Plumbing Installation Work or Quotation for Electrical Wiring" className="px-4 py-2.5 bg-white/[0.02] border border-border-main rounded-lg text-text-main text-sm transition-all duration-200 focus:border-border-focus focus:ring-3 focus:ring-primary/15 outline-none" />
               </div>
             </div>
           </div>
@@ -495,28 +479,16 @@ function CreateQuotationForm() {
           <div className="glass-panel p-6 sm:p-8 flex flex-col gap-5">
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-bold text-text-main">Billing Client</h2>
-              <button
-                type="button"
-                onClick={() => setIsClientModalOpen(true)}
-                className="text-sm font-semibold text-primary hover:text-primary-hover transition-colors cursor-pointer"
-              >
-                + Add Client
+              <button type="button" onClick={() => setIsClientModalOpen(true)} className="flex items-center gap-1 text-sm font-semibold text-primary hover:text-primary-hover transition-colors cursor-pointer">
+                <UserPlus size={15} />
+                Add Client
               </button>
             </div>
             
             <div className="flex flex-col gap-4">
               <div className="flex flex-col gap-1.5">
                 <label htmlFor="clientSelect" className="text-xs font-semibold text-text-muted">Select Customer *</label>
-                <select 
-                  id="clientSelect" 
-                  value={selectedClient?.id || ''} 
-                  onChange={(e) => {
-                    const client = clients.find(c => c.id === e.target.value);
-                    setSelectedClient(client || null);
-                  }}
-                  required
-                  className="px-4 py-2.5 bg-white/2 dark:bg-white/2 [data-theme=light]:bg-slate-900/2 border border-border-main rounded-lg text-text-main text-sm transition-all duration-200 focus:border-border-focus focus:ring-3 focus:ring-primary/15 outline-none cursor-pointer"
-                >
+                <select id="clientSelect" value={selectedClient?.id || ''} onChange={(e) => { const client = clients.find(c => c.id === e.target.value); setSelectedClient(client || null); }} required className="px-4 py-2.5 bg-white/[0.02] border border-border-main rounded-lg text-text-main text-sm transition-all duration-200 focus:border-border-focus focus:ring-3 focus:ring-primary/15 outline-none cursor-pointer">
                   <option value="">-- Choose Client --</option>
                   {clients.map(c => (
                     <option key={c.id} value={c.id}>{c.name}</option>
@@ -525,11 +497,11 @@ function CreateQuotationForm() {
               </div>
 
               {selectedClient && (
-                <div className="p-4 bg-white/2 dark:bg-white/2 [data-theme=light]:bg-slate-900/2 border border-border-main rounded-xl text-sm flex flex-col gap-1 animate-fade-in">
+                <div className="p-4 bg-white/[0.02] border border-border-main rounded-xl text-sm flex flex-col gap-1 animate-fade-in">
                   <div className="text-[10px] font-bold text-text-muted uppercase tracking-wider">Selected Billing Address:</div>
                   <div className="font-bold text-text-main text-base">{selectedClient.name}</div>
-                  {selectedClient.phone && <div className="text-text-muted text-xs">Phone: {selectedClient.phone}</div>}
-                  {selectedClient.taxId && <div className="text-text-muted text-xs">GSTIN: {selectedClient.taxId}</div>}
+                  {selectedClient.phone && <div className="text-text-muted text-xs flex items-center gap-1"><Phone size={11} /> {selectedClient.phone}</div>}
+                  {selectedClient.taxId && <div className="text-text-muted text-xs flex items-center gap-1"><CreditCard size={11} /> GSTIN: {selectedClient.taxId}</div>}
                   <pre className="mt-2 font-sans whitespace-pre-wrap text-xs text-text-muted border-t border-border-main pt-2">{selectedClient.address}</pre>
                 </div>
               )}
@@ -564,9 +536,8 @@ function CreateQuotationForm() {
                           onChange={(e) => updateRow(idx, 'description', e.target.value)}
                           onFocus={() => setActiveSuggestionRow(idx)}
                           placeholder="Search or enter service description..."
-                          className="w-full px-3 py-2 border border-border-main rounded-lg text-sm bg-white/1 dark:bg-white/1 [data-theme=light]:bg-slate-900/1 text-text-main placeholder:text-text-muted focus:border-border-focus outline-none"
+                          className="w-full px-3 py-2 border border-border-main rounded-lg text-sm bg-white/[0.01] text-text-main placeholder:text-text-muted focus:border-border-focus outline-none"
                         />
-                        {/* Auto-suggest dropdown */}
                         {activeSuggestionRow === idx && item.description.trim() !== '' && (
                           <div className="absolute top-full left-2 right-2 bg-app-bg border border-border-main rounded-xl z-20 shadow-xl mt-1 overflow-hidden">
                             {itemLibrary
@@ -576,14 +547,14 @@ function CreateQuotationForm() {
                                 <div
                                   key={entry.id}
                                   onClick={() => handleItemSelect(idx, entry)}
-                                  className="flex justify-between items-center px-4 py-2.5 text-xs text-text-main cursor-pointer hover:bg-primary hover:text-white transition-colors"
+                                  className="flex justify-between items-center px-4 py-2.5 text-xs text-text-main cursor-pointer hover:bg-primary hover:text-text-inverse transition-colors"
                                 >
                                   <span>{entry.description}</span>
                                   <span className="text-[10px] text-text-muted">{entry.defaultUnit} - ₹{entry.defaultRate}</span>
                                 </div>
                               ))}
                             <div
-                              className="text-center py-2 text-[10px] text-text-muted cursor-pointer bg-white/2 border-t border-border-main hover:text-text-main"
+                              className="text-center py-2 text-[10px] text-text-muted cursor-pointer bg-white/[0.02] border-t border-border-main hover:text-text-main"
                               onClick={() => setActiveSuggestionRow(null)}
                             >
                               Close Suggestions
@@ -592,90 +563,38 @@ function CreateQuotationForm() {
                         )}
                       </td>
                       <td className="p-2 border-b border-border-main">
-                        <input 
-                          type="number" 
-                          step="any"
-                          value={item.qty ?? ''}
-                          disabled={item.isLumpSum}
-                          onChange={(e) => updateRow(idx, 'qty', e.target.value)}
-                          placeholder="-"
-                          className="w-20 px-3 py-2 border border-border-main rounded-lg text-sm bg-white/1 dark:bg-white/1 [data-theme=light]:bg-slate-900/1 text-text-main text-right disabled:opacity-30 disabled:cursor-not-allowed outline-none focus:border-border-focus"
-                        />
+                        <input type="number" step="any" value={item.qty ?? ''} disabled={item.isLumpSum} onChange={(e) => updateRow(idx, 'qty', e.target.value)} placeholder="-" className="w-20 px-3 py-2 border border-border-main rounded-lg text-sm bg-white/[0.01] text-text-main text-right disabled:opacity-30 disabled:cursor-not-allowed outline-none focus:border-border-focus" />
                       </td>
                       <td className="p-2 border-b border-border-main">
-                        <select 
-                          value={item.unit}
-                          disabled={item.isLumpSum}
-                          onChange={(e) => updateRow(idx, 'unit', e.target.value)}
-                          className="w-20 px-2 py-2 border border-border-main rounded-lg text-sm bg-white/1 dark:bg-white/1 [data-theme=light]:bg-slate-900/1 text-text-main disabled:opacity-30 disabled:cursor-not-allowed outline-none focus:border-border-focus"
-                        >
+                        <select value={item.unit} disabled={item.isLumpSum} onChange={(e) => updateRow(idx, 'unit', e.target.value)} className="w-20 px-2 py-2 border border-border-main rounded-lg text-sm bg-white/[0.01] text-text-main disabled:opacity-30 disabled:cursor-not-allowed outline-none focus:border-border-focus">
                           {UNITS.map(u => (
                             <option key={u} value={u}>{u}</option>
                           ))}
                         </select>
                       </td>
                       <td className="p-2 border-b border-border-main">
-                        <input 
-                          type="number" 
-                          step="any"
-                          value={item.rate ?? ''}
-                          disabled={item.isLumpSum}
-                          onChange={(e) => updateRow(idx, 'rate', e.target.value)}
-                          placeholder="L.S"
-                          className="w-24 px-3 py-2 border border-border-main rounded-lg text-sm bg-white/1 dark:bg-white/1 [data-theme=light]:bg-slate-900/1 text-text-main text-right disabled:opacity-30 disabled:cursor-not-allowed outline-none focus:border-border-focus"
-                        />
+                        <input type="number" step="any" value={item.rate ?? ''} disabled={item.isLumpSum} onChange={(e) => updateRow(idx, 'rate', e.target.value)} placeholder="L.S" className="w-24 px-3 py-2 border border-border-main rounded-lg text-sm bg-white/[0.01] text-text-main text-right disabled:opacity-30 disabled:cursor-not-allowed outline-none focus:border-border-focus" />
                       </td>
                       <td className="p-2 border-b border-border-main text-right">
                         {item.isLumpSum ? (
-                          <input 
-                            type="number"
-                            value={item.amount}
-                            onChange={(e) => updateRow(idx, 'amount', e.target.value)}
-                            className="w-28 px-3 py-2 border border-secondary/20 rounded-lg text-sm bg-secondary/10 text-secondary font-bold text-right outline-none focus:border-secondary"
-                          />
+                          <input type="number" value={item.amount} onChange={(e) => updateRow(idx, 'amount', e.target.value)} className="w-28 px-3 py-2 border border-secondary/20 rounded-lg text-sm bg-secondary/10 text-secondary font-bold text-right outline-none focus:border-secondary" />
                         ) : (
                           <span className="font-bold text-sm text-text-main tabular-nums pr-2">₹{item.amount.toFixed(2)}</span>
                         )}
                       </td>
                       <td className="p-2 border-b border-border-main">
                         <div className="flex items-center justify-center gap-1">
-                          <button
-                            type="button"
-                            onClick={() => toggleLumpSum(idx)}
-                            className={`w-7 h-7 flex items-center justify-center rounded-lg text-[10px] font-extrabold border transition-all duration-200 cursor-pointer ${
-                              item.isLumpSum
-                                ? 'bg-secondary border-secondary text-white'
-                                : 'bg-white/2 border-border-main text-text-muted hover:text-text-main hover:border-white/15'
-                            }`}
-                            title="Toggle Lump Sum"
-                          >
+                          <button type="button" onClick={() => toggleLumpSum(idx)} className={`w-7 h-7 flex items-center justify-center rounded-lg text-[10px] font-extrabold border transition-all duration-200 cursor-pointer ${item.isLumpSum ? 'bg-secondary border-secondary text-text-inverse' : 'bg-white/[0.02] border-border-main text-text-muted hover:text-text-main hover:border-primary/30'}`} title="Toggle Lump Sum">
                             L.S
                           </button>
-                          <button
-                            type="button"
-                            onClick={() => moveRow(idx, 'up')}
-                            disabled={idx === 0}
-                            className="w-7 h-7 flex items-center justify-center rounded-lg text-xs bg-white/2 border border-border-main text-text-muted transition-all duration-200 hover:text-text-main hover:border-white/15 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
-                            title="Move Row Up"
-                          >
-                            ▲
+                          <button type="button" onClick={() => moveRow(idx, 'up')} disabled={idx === 0} className="w-7 h-7 flex items-center justify-center rounded-lg text-xs bg-white/[0.02] border border-border-main text-text-muted transition-all duration-200 hover:text-text-main hover:border-primary/30 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer" title="Move Row Up">
+                            <ChevronUp size={14} />
                           </button>
-                          <button
-                            type="button"
-                            onClick={() => moveRow(idx, 'down')}
-                            disabled={idx === lineItems.length - 1}
-                            className="w-7 h-7 flex items-center justify-center rounded-lg text-xs bg-white/2 border border-border-main text-text-muted transition-all duration-200 hover:text-text-main hover:border-white/15 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
-                            title="Move Row Down"
-                          >
-                            ▼
+                          <button type="button" onClick={() => moveRow(idx, 'down')} disabled={idx === lineItems.length - 1} className="w-7 h-7 flex items-center justify-center rounded-lg text-xs bg-white/[0.02] border border-border-main text-text-muted transition-all duration-200 hover:text-text-main hover:border-primary/30 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer" title="Move Row Down">
+                            <ChevronDown size={14} />
                           </button>
-                          <button
-                            type="button"
-                            onClick={() => deleteRow(idx)}
-                            className="w-7 h-7 flex items-center justify-center rounded-lg text-xs bg-white/2 border border-border-main text-text-muted transition-all duration-200 hover:bg-danger hover:border-danger hover:text-white cursor-pointer"
-                            title="Delete Row"
-                          >
-                            ✕
+                          <button type="button" onClick={() => deleteRow(idx)} className="w-7 h-7 flex items-center justify-center rounded-lg text-xs bg-white/[0.02] border border-border-main text-text-muted transition-all duration-200 hover:bg-danger hover:border-danger hover:text-white cursor-pointer" title="Delete Row">
+                            <X size={14} />
                           </button>
                         </div>
                       </td>
@@ -685,12 +604,8 @@ function CreateQuotationForm() {
               </table>
             </div>
             
-            <button
-              type="button"
-              onClick={addRow}
-              className="flex items-center gap-1.5 mt-4 text-sm font-semibold text-primary hover:text-primary-hover p-1 transition-colors cursor-pointer w-fit"
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <button type="button" onClick={addRow} className="flex items-center gap-1.5 mt-4 text-sm font-semibold text-primary hover:text-primary-hover p-1 transition-colors cursor-pointer w-fit">
+              <Plus size={16} strokeWidth={2.5} />
               Add Item Row
             </button>
           </div>
@@ -701,26 +616,12 @@ function CreateQuotationForm() {
             <div className="flex flex-col gap-5">
               <div className="flex flex-col gap-1.5">
                 <label htmlFor="terms" className="text-xs font-semibold text-text-muted">Terms & Conditions</label>
-                <textarea
-                  id="terms"
-                  rows={4}
-                  value={terms}
-                  onChange={(e) => setTerms(e.target.value)}
-                  placeholder="Terms and conditions shown below words total"
-                  className="px-4 py-2.5 bg-white/2 dark:bg-white/2 [data-theme=light]:bg-slate-900/2 border border-border-main rounded-lg text-text-main text-sm transition-all duration-200 focus:border-border-focus focus:ring-3 focus:ring-primary/15 outline-none resize-y"
-                ></textarea>
+                <textarea id="terms" rows={4} value={terms} onChange={(e) => setTerms(e.target.value)} placeholder="Terms and conditions shown below words total" className="px-4 py-2.5 bg-white/[0.02] border border-border-main rounded-lg text-text-main text-sm transition-all duration-200 focus:border-border-focus focus:ring-3 focus:ring-primary/15 outline-none resize-y"></textarea>
               </div>
 
               <div className="flex flex-col gap-1.5">
                 <label htmlFor="notes" className="text-xs font-semibold text-text-muted">Notes / Private Remarks</label>
-                <textarea
-                  id="notes"
-                  rows={2}
-                  value={notes}
-                  onChange={(e) => setNotes(e.target.value)}
-                  placeholder="Optional text/bank details notes to client"
-                  className="px-4 py-2.5 bg-white/2 dark:bg-white/2 [data-theme=light]:bg-slate-900/2 border border-border-main rounded-lg text-text-main text-sm transition-all duration-200 focus:border-border-focus focus:ring-3 focus:ring-primary/15 outline-none resize-y"
-                ></textarea>
+                <textarea id="notes" rows={2} value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Optional text/bank details notes to client" className="px-4 py-2.5 bg-white/[0.02] border border-border-main rounded-lg text-text-main text-sm transition-all duration-200 focus:border-border-focus focus:ring-3 focus:ring-primary/15 outline-none resize-y"></textarea>
               </div>
             </div>
           </div>
@@ -728,7 +629,7 @@ function CreateQuotationForm() {
 
         {/* Right Column: Sticky Summary Pane */}
         <div className="flex flex-col gap-6 sticky top-24">
-          <div className="glass-panel p-6 sm:p-8 flex flex-col gap-6">
+          <div className="glass-panel gold-accent-top p-6 sm:p-8 flex flex-col gap-6">
             <h2 className="text-lg font-bold text-text-main">Calculations Summary</h2>
             
             <div className="flex flex-col gap-4">
@@ -740,19 +641,9 @@ function CreateQuotationForm() {
               {/* Discount panel */}
               <div className="flex justify-between items-center gap-4 text-sm">
                 <span className="text-xs font-semibold text-text-muted uppercase tracking-wider">Discount</span>
-                <div className="flex border border-border-main rounded-lg overflow-hidden bg-white/1 dark:bg-white/1">
-                  <input 
-                    type="number" 
-                    value={discountValue || ''} 
-                    onChange={(e) => setDiscountValue(parseFloat(e.target.value) || 0)}
-                    placeholder="0" 
-                    className="w-16 px-2.5 py-1.5 text-right text-xs bg-transparent text-text-main outline-none focus:ring-0 border-none"
-                  />
-                  <select 
-                    value={discountType} 
-                    onChange={(e) => setDiscountType(e.target.value as 'flat' | 'percent')}
-                    className="px-2 py-1.5 bg-white/5 border-l border-border-main text-xs text-text-muted cursor-pointer outline-none border-none focus:ring-0"
-                  >
+                <div className="flex border border-border-main rounded-lg overflow-hidden bg-white/[0.01]">
+                  <input type="number" value={discountValue || ''} onChange={(e) => setDiscountValue(parseFloat(e.target.value) || 0)} placeholder="0" className="w-16 px-2.5 py-1.5 text-right text-xs bg-transparent text-text-main outline-none focus:ring-0 border-none" />
+                  <select value={discountType} onChange={(e) => setDiscountType(e.target.value as 'flat' | 'percent')} className="px-2 py-1.5 bg-white/5 border-l border-border-main text-xs text-text-muted cursor-pointer outline-none border-none focus:ring-0">
                     <option value="flat">₹</option>
                     <option value="percent">%</option>
                   </select>
@@ -762,29 +653,14 @@ function CreateQuotationForm() {
               {/* Tax panel */}
               <div className="flex justify-between items-center gap-4 text-sm">
                 <label className="flex items-center gap-2 cursor-pointer text-xs font-semibold text-text-muted uppercase tracking-wider">
-                  <input
-                    type="checkbox"
-                    checked={taxEnabled}
-                    onChange={(e) => setTaxEnabled(e.target.checked)}
-                    className="rounded bg-white/5 border-border-main text-primary focus:ring-0 focus:ring-offset-0 cursor-pointer"
-                  />
+                  <input type="checkbox" checked={taxEnabled} onChange={(e) => setTaxEnabled(e.target.checked)} className="rounded bg-white/5 border-border-main text-primary focus:ring-0 focus:ring-offset-0 cursor-pointer" />
                   <span>Apply Tax</span>
                 </label>
 
                 {taxEnabled && (
                   <div className="flex gap-1 border border-border-main rounded-lg overflow-hidden animate-fade-in">
-                    <input 
-                      type="text" 
-                      value={taxLabel} 
-                      onChange={(e) => setTaxLabel(e.target.value)} 
-                      placeholder="Label" 
-                      className="w-14 px-2 py-1.5 text-center text-xs bg-transparent text-text-main outline-none focus:ring-0 border-none"
-                    />
-                    <select 
-                      value={taxRate} 
-                      onChange={(e) => setTaxRate(parseFloat(e.target.value) || 0)}
-                      className="px-2 py-1.5 bg-white/5 border-l border-border-main text-xs text-text-muted cursor-pointer outline-none border-none focus:ring-0"
-                    >
+                    <input type="text" value={taxLabel} onChange={(e) => setTaxLabel(e.target.value)} placeholder="Label" className="w-14 px-2 py-1.5 text-center text-xs bg-transparent text-text-main outline-none focus:ring-0 border-none" />
+                    <select value={taxRate} onChange={(e) => setTaxRate(parseFloat(e.target.value) || 0)} className="px-2 py-1.5 bg-white/5 border-l border-border-main text-xs text-text-muted cursor-pointer outline-none border-none focus:ring-0">
                       <option value={0}>0%</option>
                       <option value={5}>5%</option>
                       <option value={12}>12%</option>
@@ -804,12 +680,12 @@ function CreateQuotationForm() {
 
               <div className="h-[1px] bg-border-main my-2"></div>
 
-              <div className="flex justify-between items-center text-xl font-extrabold text-secondary">
+              <div className="flex justify-between items-center text-xl font-extrabold text-primary">
                 <span>GRAND TOTAL</span>
                 <span className="tabular-nums">₹{total.toFixed(2)}</span>
               </div>
 
-              <div className="text-xs text-text-muted leading-relaxed bg-white/2 dark:bg-white/2 [data-theme=light]:bg-slate-900/2 p-3.5 border border-border-main rounded-lg">
+              <div className="text-xs text-text-muted leading-relaxed bg-white/[0.02] p-3.5 border border-border-main rounded-lg">
                 <strong className="font-semibold text-[10px] uppercase tracking-wider text-text-muted">Amount in Words:</strong>
                 <p className="italic text-text-main mt-1 font-semibold">({amountInWords})</p>
               </div>
@@ -819,18 +695,18 @@ function CreateQuotationForm() {
               <button
                 type="button"
                 onClick={saveAndPreview}
-                className="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary-hover text-white py-3 rounded-lg font-bold text-sm shadow-lg shadow-primary/20 transition-all duration-200 hover:-translate-y-0.5 cursor-pointer"
+                className="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary-hover text-text-inverse py-3 rounded-lg font-bold text-sm shadow-lg shadow-primary/20 transition-all duration-200 hover:-translate-y-0.5 cursor-pointer animate-glow-pulse"
               >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                <Eye size={16} />
                 Save & Preview
               </button>
 
               <button
                 type="button"
                 onClick={saveAndExit}
-                className="w-full flex items-center justify-center gap-2 border border-border-main bg-white/3 hover:bg-white/7 text-text-main py-3 rounded-lg font-bold text-sm transition-all duration-200 cursor-pointer"
+                className="w-full flex items-center justify-center gap-2 border border-border-main bg-white/[0.03] hover:bg-white/[0.07] text-text-main py-3 rounded-lg font-bold text-sm transition-all duration-200 cursor-pointer"
               >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
+                <Save size={16} />
                 Save Document
               </button>
 
@@ -848,89 +724,50 @@ function CreateQuotationForm() {
 
       {/* Inline Client creation modal */}
       {isClientModalOpen && (
-        <div className="fixed inset-0 z-[200] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-6">
+        <div className="fixed inset-0 z-[200] bg-black/80 backdrop-blur-md flex items-center justify-center p-6">
           <div className="w-full max-w-lg glass-panel p-6 sm:p-8 flex flex-col gap-6 animate-fade-in bg-card-bg">
             <div className="flex justify-between items-center">
-              <h2 className="text-lg font-bold text-text-main">👤 Add Client to Address Book</h2>
-              <button
-                type="button"
-                onClick={() => setIsClientModalOpen(false)}
-                className="text-text-muted hover:text-text-main transition-colors cursor-pointer"
-              >
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              <div className="flex items-center gap-2">
+                <UserPlus size={20} className="text-primary" />
+                <h2 className="text-lg font-bold text-text-main">Add Client to Address Book</h2>
+              </div>
+              <button type="button" onClick={() => setIsClientModalOpen(false)} className="text-text-muted hover:text-text-main transition-colors cursor-pointer">
+                <X size={24} />
               </button>
             </div>
             
             <form onSubmit={handleAddClientInline} className="flex flex-col gap-5">
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-semibold text-text-muted">Client / Business Name *</label>
-                <input
-                  type="text"
-                  value={newClientName}
-                  onChange={(e) => setNewClientName(e.target.value)}
-                  required
-                  placeholder="e.g. Urbanetek HVACV Eng Pvt. Ltd"
-                  className="px-4 py-2.5 bg-white/2 dark:bg-white/2 [data-theme=light]:bg-slate-900/2 border border-border-main rounded-lg text-text-main text-sm transition-all duration-200 focus:border-border-focus focus:ring-3 focus:ring-primary/15 outline-none"
-                />
+                <label className="text-xs font-semibold text-text-muted flex items-center gap-1.5"><Building2 size={12} />Client / Business Name *</label>
+                <input type="text" value={newClientName} onChange={(e) => setNewClientName(e.target.value)} required placeholder="e.g. Urbanetek HVACV Eng Pvt. Ltd" className="px-4 py-2.5 bg-white/[0.02] border border-border-main rounded-lg text-text-main text-sm transition-all duration-200 focus:border-border-focus focus:ring-3 focus:ring-primary/15 outline-none" />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-xs font-semibold text-text-muted">Phone Number</label>
-                  <input
-                    type="text"
-                    value={newClientPhone}
-                    onChange={(e) => setNewClientPhone(e.target.value)}
-                    placeholder="e.g. 9876543210"
-                    className="px-4 py-2.5 bg-white/2 dark:bg-white/2 [data-theme=light]:bg-slate-900/2 border border-border-main rounded-lg text-text-main text-sm transition-all duration-200 focus:border-border-focus focus:ring-3 focus:ring-primary/15 outline-none"
-                  />
+                  <label className="text-xs font-semibold text-text-muted flex items-center gap-1.5"><Phone size={12} />Phone Number</label>
+                  <input type="text" value={newClientPhone} onChange={(e) => setNewClientPhone(e.target.value)} placeholder="e.g. 9876543210" className="px-4 py-2.5 bg-white/[0.02] border border-border-main rounded-lg text-text-main text-sm transition-all duration-200 focus:border-border-focus focus:ring-3 focus:ring-primary/15 outline-none" />
                 </div>
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-xs font-semibold text-text-muted">Email Address</label>
-                  <input
-                    type="email"
-                    value={newClientEmail}
-                    onChange={(e) => setNewClientEmail(e.target.value)}
-                    placeholder="e.g. billing@client.com"
-                    className="px-4 py-2.5 bg-white/2 dark:bg-white/2 [data-theme=light]:bg-slate-900/2 border border-border-main rounded-lg text-text-main text-sm transition-all duration-200 focus:border-border-focus focus:ring-3 focus:ring-primary/15 outline-none"
-                  />
+                  <label className="text-xs font-semibold text-text-muted flex items-center gap-1.5"><Mail size={12} />Email Address</label>
+                  <input type="email" value={newClientEmail} onChange={(e) => setNewClientEmail(e.target.value)} placeholder="e.g. billing@client.com" className="px-4 py-2.5 bg-white/[0.02] border border-border-main rounded-lg text-text-main text-sm transition-all duration-200 focus:border-border-focus focus:ring-3 focus:ring-primary/15 outline-none" />
                 </div>
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-semibold text-text-muted">GST No. / Client Tax ID</label>
-                <input
-                  type="text"
-                  value={newClientTaxId}
-                  onChange={(e) => setNewClientTaxId(e.target.value)}
-                  placeholder="GSTIN (optional)"
-                  className="px-4 py-2.5 bg-white/2 dark:bg-white/2 [data-theme=light]:bg-slate-900/2 border border-border-main rounded-lg text-text-main text-sm transition-all duration-200 focus:border-border-focus focus:ring-3 focus:ring-primary/15 outline-none"
-                />
+                <label className="text-xs font-semibold text-text-muted flex items-center gap-1.5"><CreditCard size={12} />GST No. / Client Tax ID</label>
+                <input type="text" value={newClientTaxId} onChange={(e) => setNewClientTaxId(e.target.value)} placeholder="GSTIN (optional)" className="px-4 py-2.5 bg-white/[0.02] border border-border-main rounded-lg text-text-main text-sm transition-all duration-200 focus:border-border-focus focus:ring-3 focus:ring-primary/15 outline-none" />
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-semibold text-text-muted">Billing & Site Address (Multi-line)</label>
-                <textarea
-                  rows={3}
-                  value={newClientAddress}
-                  onChange={(e) => setNewClientAddress(e.target.value)}
-                  placeholder="Full physical billing location"
-                  className="px-4 py-2.5 bg-white/2 dark:bg-white/2 [data-theme=light]:bg-slate-900/2 border border-border-main rounded-lg text-text-main text-sm transition-all duration-200 focus:border-border-focus focus:ring-3 focus:ring-primary/15 outline-none resize-y"
-                ></textarea>
+                <label className="text-xs font-semibold text-text-muted flex items-center gap-1.5"><MapPin size={12} />Billing & Site Address (Multi-line)</label>
+                <textarea rows={3} value={newClientAddress} onChange={(e) => setNewClientAddress(e.target.value)} placeholder="Full physical billing location" className="px-4 py-2.5 bg-white/[0.02] border border-border-main rounded-lg text-text-main text-sm transition-all duration-200 focus:border-border-focus focus:ring-3 focus:ring-primary/15 outline-none resize-y"></textarea>
               </div>
 
               <div className="flex justify-end gap-3 border-t border-border-main pt-5 mt-2">
-                <button
-                  type="button"
-                  onClick={() => setIsClientModalOpen(false)}
-                  className="px-5 py-2.5 border border-border-main rounded-lg text-sm font-semibold text-text-muted hover:text-text-main hover:bg-white/5 transition-all cursor-pointer"
-                >
+                <button type="button" onClick={() => setIsClientModalOpen(false)} className="px-5 py-2.5 border border-border-main rounded-lg text-sm font-semibold text-text-muted hover:text-text-main hover:bg-white/5 transition-all cursor-pointer">
                   Cancel
                 </button>
-                <button
-                  type="submit"
-                  className="px-5 py-2.5 bg-primary hover:bg-primary-hover text-white rounded-lg text-sm font-semibold transition-all cursor-pointer"
-                >
+                <button type="submit" className="px-5 py-2.5 bg-primary hover:bg-primary-hover text-text-inverse rounded-lg text-sm font-semibold transition-all cursor-pointer">
                   Save Client
                 </button>
               </div>
@@ -948,7 +785,7 @@ export default function CreateQuotation() {
   return (
     <Suspense fallback={
       <div className="flex h-[50vh] items-center justify-center">
-        <div className="w-10 h-10 border-3 border-white/10 rounded-full border-t-primary animate-spin"></div>
+        <div className="w-10 h-10 border-3 border-primary/20 rounded-full border-t-primary animate-spin"></div>
       </div>
     }>
       <CreateQuotationForm />
