@@ -29,8 +29,8 @@ export default function PreviewQuotation() {
 
   if (!mounted || !quotation) {
     return (
-      <div className="loading-container">
-        <div className="spinner"></div>
+      <div className="flex h-[50vh] items-center justify-center">
+        <div className="w-10 h-10 border-3 border-white/10 rounded-full border-t-primary animate-spin"></div>
       </div>
     );
   }
@@ -80,37 +80,49 @@ export default function PreviewQuotation() {
   };
 
   return (
-    <div className="preview-page animate-fade-in">
+    <div className="flex flex-col gap-8 w-full items-center pb-16 animate-fade-in">
       {/* Action bar (hidden in print) */}
-      <div className="no-print actions-bar glass-panel">
-        <div className="actions-left">
-          <Link href="/saved" className="action-btn-back">
+      <div className="no-print glass-panel w-full max-w-3xl p-4 px-6 flex justify-between items-center flex-wrap gap-4">
+        <div>
+          <Link href="/saved" className="text-sm font-semibold text-text-muted hover:text-text-main transition-colors duration-200">
             ← Back to List
           </Link>
         </div>
-        <div className="actions-right">
-          <Link href={`/create?id=${quotation.id}`} className="action-btn edit-btn">
+        <div className="flex gap-2 flex-wrap">
+          <Link
+            href={`/create?id=${quotation.id}`}
+            className="px-4 py-2 rounded-lg text-xs font-bold border border-border-main text-text-main bg-white/2 hover:bg-white/5 transition-all duration-200"
+          >
             ✏️ Edit Document
           </Link>
-          <button onClick={handleShareWhatsApp} className="action-btn whatsapp-btn">
+          <button
+            onClick={handleShareWhatsApp}
+            className="px-4 py-2 rounded-lg text-xs font-bold bg-[#25d366] hover:bg-[#20ba5a] text-white cursor-pointer transition-all duration-200"
+          >
             💬 Share WhatsApp
           </button>
-          <button onClick={handleShareEmail} className="action-btn email-btn">
+          <button
+            onClick={handleShareEmail}
+            className="px-4 py-2 rounded-lg text-xs font-bold bg-secondary/10 hover:bg-secondary/20 text-secondary border border-secondary/20 cursor-pointer transition-all duration-200"
+          >
             📧 Email Client
           </button>
-          <button onClick={handlePrint} className="action-btn print-btn">
+          <button
+            onClick={handlePrint}
+            className="px-4 py-2 rounded-lg text-xs font-bold bg-primary hover:bg-primary-hover text-white cursor-pointer transition-all duration-200"
+          >
             🖨️ Print / Save PDF
           </button>
         </div>
       </div>
 
       {/* A4 Paper Template Container */}
-      <div className="print-page-wrapper a4-sheet glass-panel">
+      <div className="print-page-wrapper a4-sheet bg-white text-slate-900 w-full max-w-[800px] min-h-[1050px] p-12 rounded-xl shadow-xl flex flex-col font-sans border border-transparent dark:border-white/10 [data-theme=light]:border-slate-900/10 print:box-shadow-none print:border-none print:p-0 print:m-0 print:w-full print:max-w-full">
         
         {/* Company Header Info */}
         <div className="print-header">
           {quotation.company.logoUri && (
-            <img src={quotation.company.logoUri} alt="Logo" className="company-logo-print" />
+            <img src={quotation.company.logoUri} alt="Logo" className="max-h-16 mx-auto mb-2 block object-contain" />
           )}
           <h1 className="print-company-name">{quotation.company.name}</h1>
           <p className="print-company-tagline">{quotation.company.tagline}</p>
@@ -130,7 +142,7 @@ export default function PreviewQuotation() {
         </div>
 
         {/* Client details info */}
-        <div className="print-to-section">
+        <div className="print-to-section text-slate-800">
           <div className="print-to-label">To,</div>
           <div className="print-to-name">{quotation.client.name}</div>
           <pre className="print-to-address">{quotation.client.address}</pre>
@@ -138,13 +150,13 @@ export default function PreviewQuotation() {
         </div>
 
         {/* Subject Header */}
-        <div className="print-subject">
+        <div className="print-subject text-slate-900">
           Sub: {quotation.type === 'quotation' ? 'Quotation' : quotation.type === 'running_bill' ? 'Running Bill' : 'Invoice'}
           {quotation.subject ? ` — ${quotation.subject}` : ''}
         </div>
 
         {/* Ruled Rupee Table */}
-        <table className="print-table">
+        <table className="print-table text-slate-800">
           <thead>
             <tr>
               <th className="print-col-sr">Sr. No.</th>
@@ -173,7 +185,7 @@ export default function PreviewQuotation() {
             
             {/* Subtotal row */}
             <tr className="print-totals-row">
-              <td colSpan={3} style={{ border: 'none' }}></td>
+              <td colSpan={3} className="border-none!"></td>
               <td className="print-totals-label">Subtotal</td>
               <td className="print-totals-val tabular-nums">
                 {formatCurrency(quotation.subtotal)}/-
@@ -183,11 +195,11 @@ export default function PreviewQuotation() {
             {/* Discount row if present */}
             {quotation.discountAmount > 0 && (
               <tr>
-                <td colSpan={3} style={{ border: 'none' }}></td>
+                <td colSpan={3} className="border-none!"></td>
                 <td className="print-totals-label">
                   Discount {quotation.discountType === 'percent' ? `(${quotation.discountValue}%)` : ''}
                 </td>
-                <td className="print-totals-val tabular-nums text-danger">
+                <td className="print-totals-val tabular-nums text-red-600">
                   -{formatCurrency(quotation.discountAmount)}/-
                 </td>
               </tr>
@@ -196,7 +208,7 @@ export default function PreviewQuotation() {
             {/* Tax row if present */}
             {quotation.taxAmount > 0 && (
               <tr>
-                <td colSpan={3} style={{ border: 'none' }}></td>
+                <td colSpan={3} className="border-none!"></td>
                 <td className="print-totals-label">
                   {quotation.taxLabel} ({quotation.taxRate}%)
                 </td>
@@ -208,9 +220,9 @@ export default function PreviewQuotation() {
 
             {/* Grand Total row */}
             <tr>
-              <td colSpan={3} style={{ border: 'none' }}></td>
-              <td className="print-totals-label" style={{ fontSize: '10.5pt', borderTop: '1.5pt solid #000000' }}>TOTAL</td>
-              <td className="print-totals-val tabular-nums" style={{ fontSize: '11.5pt', borderTop: '1.5pt solid #000000' }}>
+              <td colSpan={3} className="border-none!"></td>
+              <td className="print-totals-label font-bold text-slate-900 border-t border-slate-900" style={{ fontSize: '10.5pt' }}>TOTAL</td>
+              <td className="print-totals-val tabular-nums font-bold text-slate-900 border-t border-slate-900" style={{ fontSize: '11.5pt' }}>
                 {formatCurrency(quotation.total)}/-
               </td>
             </tr>
@@ -218,20 +230,20 @@ export default function PreviewQuotation() {
         </table>
 
         {/* Currency Amount in Words */}
-        <div className="print-words-box">
+        <div className="print-words-box text-slate-800">
           ({quotation.amountInWords})
         </div>
 
         {/* Terms and conditions info */}
         {quotation.termsAndConditions && (
-          <div className="print-terms">
+          <div className="print-terms text-slate-700">
             <div className="print-terms-title">Terms & Conditions:</div>
             {quotation.termsAndConditions}
           </div>
         )}
 
         {/* Signatory Grid Footer */}
-        <div className="print-sign-grid">
+        <div className="print-sign-grid text-slate-800">
           <div className="print-sign-thankyou">
             THANKING YOU
           </div>
@@ -239,10 +251,10 @@ export default function PreviewQuotation() {
             <div className="print-sign-company">{quotation.company.name}</div>
             
             {quotation.company.signatureUri && (
-              <img src={quotation.company.signatureUri} alt="Signature Logo" className="print-sign-img" />
+              <img src={quotation.company.signatureUri} alt="Signature" className="max-h-11 mb-2 mix-blend-multiply contrast-125 object-contain" />
             )}
             
-            <div className="print-sign-label">
+            <div className="print-sign-label text-slate-600">
               {quotation.company.proprietorName && `${quotation.company.proprietorName}`}<br />
               ({quotation.company.signatureLabel})
             </div>
@@ -250,369 +262,10 @@ export default function PreviewQuotation() {
         </div>
 
         {/* A4 Sheet Footer (hidden on screen, visible on print pages) */}
-        <div className="print-footer">
+        <div className="print-footer text-slate-500">
           Generated via QuoteBuilder Pro | {quotation.company.name}
         </div>
       </div>
-
-      <style jsx>{`
-        .loading-container {
-          display: flex;
-          height: 50vh;
-          align-items: center;
-          justify-content: center;
-        }
-
-        .spinner {
-          width: 2.5rem;
-          height: 2.5rem;
-          border: 3px solid rgba(255, 255, 255, 0.1);
-          border-radius: 50%;
-          border-top-color: var(--color-primary);
-          animation: spin 1s ease-in-out infinite;
-        }
-
-        @keyframes spin {
-          to { transform: rotate(360deg); }
-        }
-
-        .preview-page {
-          display: flex;
-          flex-direction: column;
-          gap: 2rem;
-          width: 100%;
-          align-items: center;
-          padding-bottom: 4rem;
-        }
-
-        /* Action Bar */
-        .actions-bar {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          width: 100%;
-          max-width: 800px;
-          padding: 1rem 1.5rem;
-          flex-wrap: wrap;
-          gap: 1rem;
-        }
-
-        .action-btn-back {
-          font-weight: 600;
-          color: var(--text-muted);
-          font-size: 0.95rem;
-        }
-
-        .action-btn-back:hover {
-          color: var(--text-main);
-        }
-
-        .actions-right {
-          display: flex;
-          gap: 0.50rem;
-          flex-wrap: wrap;
-        }
-
-        .action-btn {
-          padding: 0.6rem 1rem;
-          border-radius: var(--radius-sm);
-          font-size: 0.85rem;
-          font-weight: 700;
-        }
-
-        .edit-btn {
-          border: 1px solid var(--border-color);
-          color: var(--text-main);
-          background: rgba(255, 255, 255, 0.02);
-        }
-
-        .edit-btn:hover {
-          background: rgba(255, 255, 255, 0.06);
-        }
-
-        .whatsapp-btn {
-          background: #25d366;
-          color: white;
-        }
-
-        .whatsapp-btn:hover {
-          background: #20ba5a;
-        }
-
-        .email-btn {
-          background: rgba(20, 184, 166, 0.15);
-          color: var(--color-secondary);
-          border: 1px solid rgba(20, 184, 166, 0.3);
-        }
-
-        .email-btn:hover {
-          background: rgba(20, 184, 166, 0.25);
-        }
-
-        .print-btn {
-          background: var(--color-primary);
-          color: white;
-        }
-
-        .print-btn:hover {
-          background: var(--color-primary-hover);
-        }
-
-        /* A4 Sheet on Screen CSS */
-        .a4-sheet {
-          background: #ffffff !important;
-          color: #000000 !important;
-          width: 100%;
-          max-width: 800px; /* Mock A4 width */
-          min-height: 1050px;
-          padding: 3rem !important;
-          border-radius: var(--radius-md);
-          box-shadow: var(--shadow-lg);
-          display: flex;
-          flex-direction: column;
-          font-family: Arial, Helvetica, sans-serif !important;
-        }
-
-        .company-logo-print {
-          max-height: 60px;
-          margin-bottom: 0.5rem;
-          display: block;
-          margin-left: auto;
-          margin-right: auto;
-        }
-
-        .print-header {
-          text-align: center;
-          margin-bottom: 1.5rem;
-        }
-
-        .print-company-name {
-          font-size: 22pt;
-          font-weight: bold;
-          color: #d32f2f !important;
-          margin-bottom: 0.25rem;
-        }
-
-        .print-company-tagline {
-          font-size: 11pt;
-          font-weight: bold;
-          color: #374151;
-          font-style: italic;
-          margin-bottom: 0.5rem;
-        }
-
-        .print-company-contact {
-          font-size: 9.5pt;
-          color: #4b5563;
-          border-bottom: 2px solid #111827;
-          padding-bottom: 0.5rem;
-        }
-
-        .hdr-addr {
-          font-size: 8.5pt;
-          color: #6b7280;
-        }
-
-        .print-meta-grid {
-          display: flex;
-          justify-content: space-between;
-          font-size: 10.5pt;
-          margin-bottom: 1.5rem;
-          border-bottom: 1px solid #111827;
-          padding-bottom: 0.5rem;
-        }
-
-        .print-meta-right {
-          text-align: right;
-        }
-
-        .print-to-section {
-          font-size: 11pt;
-          margin-bottom: 1.5rem;
-          line-height: 1.5;
-        }
-
-        .print-to-label {
-          font-weight: bold;
-          color: #374151;
-        }
-
-        .print-to-name {
-          font-weight: bold;
-          font-size: 11.5pt;
-        }
-
-        .print-to-address {
-          font-family: inherit;
-          white-space: pre-wrap;
-          font-size: 10.5pt;
-          color: #374151;
-        }
-
-        .client-tax-print {
-          font-size: 9.5pt;
-          font-weight: bold;
-          color: #4b5563;
-          margin-top: 0.25rem;
-        }
-
-        .print-subject {
-          text-align: center;
-          font-size: 12pt;
-          font-weight: bold;
-          text-decoration: underline;
-          margin-bottom: 2rem;
-        }
-
-        .print-table {
-          width: 100%;
-          border-collapse: collapse;
-          margin-bottom: 1.5rem;
-        }
-
-        .print-table th, 
-        .print-table td {
-          border: 1px solid #111827;
-          padding: 0.6rem 0.75rem;
-          font-size: 10pt;
-          vertical-align: middle;
-        }
-
-        .print-table th {
-          background-color: #f3f4f6;
-          font-weight: bold;
-          text-align: center;
-        }
-
-        .print-col-sr {
-          width: 8%;
-          text-align: center;
-        }
-        
-        .print-col-desc {
-          width: 50%;
-          text-align: left;
-        }
-
-        .print-col-qty {
-          width: 14%;
-          text-align: right;
-        }
-
-        .print-col-rate {
-          width: 14%;
-          text-align: right;
-        }
-
-        .print-col-amount {
-          width: 14%;
-          text-align: right;
-        }
-
-        .print-totals-row td {
-          border-top: 2px solid #111827;
-        }
-
-        .print-totals-label {
-          font-weight: bold;
-          text-align: right;
-        }
-
-        .print-totals-val {
-          font-weight: bold;
-          text-align: right;
-        }
-
-        .print-words-box {
-          font-size: 10.5pt;
-          font-weight: bold;
-          margin-bottom: 2rem;
-          font-style: italic;
-        }
-
-        .print-terms {
-          font-size: 9.5pt;
-          line-height: 1.5;
-          margin-bottom: 2.5rem;
-          white-space: pre-wrap;
-          color: #374151;
-        }
-
-        .print-terms-title {
-          font-weight: bold;
-          text-decoration: underline;
-          margin-bottom: 0.25rem;
-          color: #111827;
-        }
-
-        .print-sign-grid {
-          display: flex;
-          justify-content: space-between;
-          align-items: flex-end;
-          margin-top: auto;
-          padding-top: 2rem;
-        }
-
-        .print-sign-thankyou {
-          font-weight: bold;
-          font-size: 11pt;
-        }
-
-        .print-sign-area {
-          display: flex;
-          flex-direction: column;
-          align-items: flex-end;
-          min-width: 200px;
-        }
-
-        .print-sign-company {
-          font-weight: bold;
-          font-size: 11pt;
-          margin-bottom: 3.5rem;
-          text-align: right;
-        }
-
-        .print-sign-img {
-          max-height: 45px;
-          margin-bottom: 0.5rem;
-          filter: contrast(1.2) multiply;
-        }
-
-        .print-sign-label {
-          font-size: 9.5pt;
-          border-top: 1px dashed #9ca3af;
-          padding-top: 0.25rem;
-          text-align: right;
-          width: 100%;
-        }
-
-        .print-footer {
-          display: none;
-        }
-
-        /* Screen only adjustments for dark mode text inside A4 sheets */
-        [data-theme="dark"] .a4-sheet {
-          border: 1px solid rgba(255, 255, 255, 0.15);
-        }
-
-        @media print {
-          .preview-page {
-            padding: 0 !important;
-            margin: 0 !important;
-          }
-          .a4-sheet {
-            box-shadow: none !important;
-            border: none !important;
-            padding: 0 !important;
-            margin: 0 !important;
-            width: 100% !important;
-            max-width: 100% !important;
-          }
-          .print-footer {
-            display: block;
-          }
-        }
-      `}</style>
     </div>
   );
 }

@@ -32,8 +32,8 @@ export default function ClientsPage() {
 
   if (!mounted) {
     return (
-      <div className="loading-container">
-        <div className="spinner"></div>
+      <div className="flex h-[50vh] items-center justify-center">
+        <div className="w-10 h-10 border-3 border-white/10 rounded-full border-t-primary animate-spin"></div>
       </div>
     );
   }
@@ -100,71 +100,127 @@ export default function ClientsPage() {
   );
 
   return (
-    <div className="clients-page animate-fade-in">
-      <div className="clients-header-bar">
+    <div className="flex flex-col gap-6 w-full animate-fade-in">
+      <div className="flex flex-wrap items-center justify-between gap-4 mb-2">
         <div>
-          <h1>👥 Client Directory</h1>
-          <p>Manage your clients, billing contacts, and site address books.</p>
+          <h1 className="text-3xl font-extrabold tracking-tight mb-1 text-text-main">👥 Client Directory</h1>
+          <p className="text-text-muted text-sm">Manage your clients, billing contacts, and site address books.</p>
         </div>
-        <button onClick={handleOpenAdd} className="add-client-btn">
+        <button
+          onClick={handleOpenAdd}
+          className="flex items-center gap-2 bg-primary hover:bg-primary-hover text-white px-5 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200"
+        >
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
           Add Client
         </button>
       </div>
 
       {/* Search Input */}
-      <div className="search-wrapper glass-panel">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <div className="glass-panel px-5 py-3.5 flex items-center gap-3 w-full">
+        <svg className="text-text-muted" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         <input 
           type="text" 
           value={searchQuery} 
           onChange={(e) => setSearchQuery(e.target.value)} 
           placeholder="Search by client name, phone, or site address..." 
+          className="flex-1 bg-transparent text-text-main placeholder:text-text-muted text-sm outline-none border-none focus:ring-0"
         />
       </div>
 
       {/* Editor Modal Overlay */}
       {isFormOpen && (
-        <div className="modal-overlay">
-          <div className="modal-content glass-panel animate-fade-in">
-            <div className="modal-header">
-              <h2>{editingClient ? '✏️ Edit Client Details' : '👤 Add New Client'}</h2>
-              <button onClick={() => setIsFormOpen(false)} className="close-modal-btn">
+        <div className="fixed inset-0 z-[200] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-6">
+          <div className="w-full max-w-lg glass-panel p-6 sm:p-8 flex flex-col gap-6 animate-fade-in">
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-bold text-text-main">{editingClient ? '✏️ Edit Client Details' : '👤 Add New Client'}</h2>
+              <button onClick={() => setIsFormOpen(false)} className="text-text-muted hover:text-text-main transition-colors">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
               </button>
             </div>
             
-            <form onSubmit={handleSubmit} className="modal-form">
-              <div className="form-group">
-                <label htmlFor="client-name">Client Name / Business Name *</label>
-                <input type="text" id="client-name" name="name" value={formData.name} onChange={handleInputChange} required placeholder="e.g. Urbanetek HVACV Eng Pvt. Ltd" />
+            <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+              <div className="flex flex-col gap-1.5">
+                <label htmlFor="client-name" className="text-xs font-semibold text-text-muted">Client Name / Business Name *</label>
+                <input
+                  type="text"
+                  id="client-name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  required
+                  placeholder="e.g. Urbanetek HVACV Eng Pvt. Ltd"
+                  className="px-4 py-2.5 bg-white/2 dark:bg-white/2 [data-theme=light]:bg-slate-900/2 border border-border-main rounded-lg text-text-main text-sm transition-all duration-200 focus:border-border-focus focus:ring-3 focus:ring-primary/15 outline-none"
+                />
               </div>
 
-              <div className="form-row">
-                <div className="form-group">
-                  <label htmlFor="client-phone">Phone Number</label>
-                  <input type="text" id="client-phone" name="phone" value={formData.phone} onChange={handleInputChange} placeholder="e.g. 9876543210" />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="flex flex-col gap-1.5">
+                  <label htmlFor="client-phone" className="text-xs font-semibold text-text-muted">Phone Number</label>
+                  <input
+                    type="text"
+                    id="client-phone"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                    placeholder="e.g. 9876543210"
+                    className="px-4 py-2.5 bg-white/2 dark:bg-white/2 [data-theme=light]:bg-slate-900/2 border border-border-main rounded-lg text-text-main text-sm transition-all duration-200 focus:border-border-focus focus:ring-3 focus:ring-primary/15 outline-none"
+                  />
                 </div>
 
-                <div className="form-group">
-                  <label htmlFor="client-email">Email Address</label>
-                  <input type="email" id="client-email" name="email" value={formData.email} onChange={handleInputChange} placeholder="e.g. billing@client.com" />
+                <div className="flex flex-col gap-1.5">
+                  <label htmlFor="client-email" className="text-xs font-semibold text-text-muted">Email Address</label>
+                  <input
+                    type="email"
+                    id="client-email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    placeholder="e.g. billing@client.com"
+                    className="px-4 py-2.5 bg-white/2 dark:bg-white/2 [data-theme=light]:bg-slate-900/2 border border-border-main rounded-lg text-text-main text-sm transition-all duration-200 focus:border-border-focus focus:ring-3 focus:ring-primary/15 outline-none"
+                  />
                 </div>
               </div>
 
-              <div className="form-group">
-                <label htmlFor="client-taxId">GST No. / Client Tax ID</label>
-                <input type="text" id="client-taxId" name="taxId" value={formData.taxId} onChange={handleInputChange} placeholder="e.g. GSTIN/VAT (optional)" />
+              <div className="flex flex-col gap-1.5">
+                <label htmlFor="client-taxId" className="text-xs font-semibold text-text-muted">GST No. / Client Tax ID</label>
+                <input
+                  type="text"
+                  id="client-taxId"
+                  name="taxId"
+                  value={formData.taxId}
+                  onChange={handleInputChange}
+                  placeholder="e.g. GSTIN/VAT (optional)"
+                  className="px-4 py-2.5 bg-white/2 dark:bg-white/2 [data-theme=light]:bg-slate-900/2 border border-border-main rounded-lg text-text-main text-sm transition-all duration-200 focus:border-border-focus focus:ring-3 focus:ring-primary/15 outline-none"
+                />
               </div>
 
-              <div className="form-group">
-                <label htmlFor="client-address">Site / Billing Address (Multi-line)</label>
-                <textarea id="client-address" name="address" rows={4} value={formData.address} onChange={handleInputChange} placeholder="Provide site location or full billing address"></textarea>
+              <div className="flex flex-col gap-1.5">
+                <label htmlFor="client-address" className="text-xs font-semibold text-text-muted">Site / Billing Address (Multi-line)</label>
+                <textarea
+                  id="client-address"
+                  name="address"
+                  rows={4}
+                  value={formData.address}
+                  onChange={handleInputChange}
+                  placeholder="Provide site location or full billing address"
+                  className="px-4 py-2.5 bg-white/2 dark:bg-white/2 [data-theme=light]:bg-slate-900/2 border border-border-main rounded-lg text-text-main text-sm transition-all duration-200 focus:border-border-focus focus:ring-3 focus:ring-primary/15 outline-none resize-y"
+                ></textarea>
               </div>
 
-              <div className="modal-actions">
-                <button type="button" onClick={() => setIsFormOpen(false)} className="cancel-btn">Cancel</button>
-                <button type="submit" className="submit-btn">Save Client</button>
+              <div className="flex justify-end gap-3 border-t border-border-main pt-5 mt-2">
+                <button
+                  type="button"
+                  onClick={() => setIsFormOpen(false)}
+                  className="px-5 py-2.5 border border-border-main rounded-lg text-sm font-semibold text-text-muted hover:text-text-main hover:bg-white/5 transition-all"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2.5 bg-primary hover:bg-primary-hover text-white rounded-lg text-sm font-semibold transition-all"
+                >
+                  Save Client
+                </button>
               </div>
             </form>
           </div>
@@ -172,46 +228,65 @@ export default function ClientsPage() {
       )}
 
       {/* Client List Grid */}
-      <div className="clients-list">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         {filteredClients.length > 0 ? (
           filteredClients.map((client) => (
-            <div key={client.id} className="client-card glass-panel animate-fade-in">
-              <div className="client-card-header">
-                <div>
-                  <h3>{client.name}</h3>
-                  {client.taxId && <span className="client-gst">GSTIN: {client.taxId}</span>}
+            <div key={client.id} className="glass-panel p-6 flex flex-col gap-5 justify-between animate-fade-in">
+              <div className="flex justify-between items-start gap-4">
+                <div className="min-w-0">
+                  <h3 className="font-bold text-lg text-text-main mb-1 truncate">{client.name}</h3>
+                  {client.taxId && (
+                    <span className="inline-block text-[10px] font-semibold text-secondary bg-secondary/10 px-2 py-0.5 rounded border border-secondary/20">
+                      GSTIN: {client.taxId}
+                    </span>
+                  )}
                 </div>
-                <div className="client-actions">
-                  <button onClick={() => handleOpenEdit(client)} className="action-icon-btn edit" title="Edit Client">
+                <div className="flex gap-2 shrink-0">
+                  <button
+                    onClick={() => handleOpenEdit(client)}
+                    className="w-8 h-8 rounded-lg flex items-center justify-center border border-border-main bg-white/2 text-text-muted transition-all duration-200 hover:bg-primary/10 hover:text-primary hover:border-primary/20"
+                    title="Edit Client"
+                  >
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4Z"/></svg>
                   </button>
-                  <button onClick={() => handleDelete(client.id, client.name)} className="action-icon-btn delete" title="Delete Client">
+                  <button
+                    onClick={() => handleDelete(client.id, client.name)}
+                    className="w-8 h-8 rounded-lg flex items-center justify-center border border-border-main bg-white/2 text-text-muted transition-all duration-200 hover:bg-danger/10 hover:text-danger hover:border-danger/20"
+                    title="Delete Client"
+                  >
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
                   </button>
                 </div>
               </div>
 
-              <div className="client-card-details">
+              <div className="flex flex-col gap-2 text-sm">
                 {client.phone && (
-                  <p className="detail-item">
-                    <strong>Phone:</strong> {client.phone}
+                  <p className="flex gap-2">
+                    <strong className="text-text-muted font-medium w-16 shrink-0">Phone:</strong>
+                    <span className="text-text-main">{client.phone}</span>
                   </p>
                 )}
                 {client.email && (
-                  <p className="detail-item">
-                    <strong>Email:</strong> {client.email}
+                  <p className="flex gap-2">
+                    <strong className="text-text-muted font-medium w-16 shrink-0">Email:</strong>
+                    <span className="text-text-main">{client.email}</span>
                   </p>
                 )}
                 {client.address && (
-                  <div className="detail-item address">
-                    <strong>Address:</strong>
-                    <p>{client.address}</p>
+                  <div className="flex flex-col gap-1 mt-1">
+                    <strong className="text-text-muted font-medium w-16 shrink-0 text-sm">Address:</strong>
+                    <p className="text-text-muted text-xs pl-3 border-l-2 border-border-main whitespace-pre-wrap leading-relaxed">
+                      {client.address}
+                    </p>
                   </div>
                 )}
               </div>
 
-              <div className="client-card-footer">
-                <Link href={`/create?clientId=${client.id}`} className="client-create-quote-link">
+              <div className="border-t border-border-main pt-4 mt-1">
+                <Link
+                  href={`/create?clientId=${client.id}`}
+                  className="flex items-center gap-1.5 text-primary hover:text-primary-hover font-semibold text-xs transition-colors duration-200"
+                >
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                   Create Document for Client
                 </Link>
@@ -219,361 +294,18 @@ export default function ClientsPage() {
             </div>
           ))
         ) : (
-          <div className="no-clients glass-panel">
+          <div className="flex flex-col items-center justify-center gap-4 p-12 text-center md:col-span-2 text-text-muted glass-panel">
             <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-            <p>No clients found. Add some clients to start generating invoices easily.</p>
-            <button onClick={handleOpenAdd} className="add-client-btn">Add First Client</button>
+            <p className="max-w-xs text-sm">No clients found. Add some clients to start generating invoices easily.</p>
+            <button
+              onClick={handleOpenAdd}
+              className="flex items-center gap-2 bg-primary hover:bg-primary-hover text-white px-5 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200"
+            >
+              Add First Client
+            </button>
           </div>
         )}
       </div>
-
-      <style jsx>{`
-        .loading-container {
-          display: flex;
-          height: 50vh;
-          align-items: center;
-          justify-content: center;
-        }
-
-        .spinner {
-          width: 2.5rem;
-          height: 2.5rem;
-          border: 3px solid rgba(255, 255, 255, 0.1);
-          border-radius: 50%;
-          border-top-color: var(--color-primary);
-          animation: spin 1s ease-in-out infinite;
-        }
-
-        @keyframes spin {
-          to { transform: rotate(360deg); }
-        }
-
-        .clients-page {
-          display: flex;
-          flex-direction: column;
-          gap: 1.5rem;
-          width: 100%;
-        }
-
-        .clients-header-bar {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          flex-wrap: wrap;
-          gap: 1rem;
-        }
-
-        .clients-header-bar h1 {
-          font-size: 1.8rem;
-          font-weight: 800;
-          letter-spacing: -0.5px;
-          margin-bottom: 0.25rem;
-        }
-
-        .clients-header-bar p {
-          color: var(--text-muted);
-          font-size: 0.95rem;
-        }
-
-        .add-client-btn {
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-          background: var(--color-primary);
-          color: white;
-          padding: 0.75rem 1.25rem;
-          border-radius: var(--radius-sm);
-          font-weight: 600;
-          font-size: 0.95rem;
-        }
-
-        .add-client-btn:hover {
-          background: var(--color-primary-hover);
-        }
-
-        .search-wrapper {
-          padding: 0.75rem 1.25rem;
-          display: flex;
-          align-items: center;
-          gap: 0.75rem;
-        }
-
-        .search-wrapper input {
-          flex: 1;
-          background: none;
-          border: none;
-          color: var(--text-main);
-          font-size: 1rem;
-        }
-
-        .clients-list {
-          display: grid;
-          grid-template-columns: 1fr;
-          gap: 1.25rem;
-        }
-
-        @media (min-width: 768px) {
-          .clients-list {
-            grid-template-columns: repeat(2, 1fr);
-          }
-        }
-
-        .client-card {
-          padding: 1.5rem;
-          display: flex;
-          flex-direction: column;
-          gap: 1.25rem;
-          justify-content: space-between;
-        }
-
-        .client-card-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: flex-start;
-          gap: 1rem;
-        }
-
-        .client-card-header h3 {
-          font-size: 1.15rem;
-          font-weight: 700;
-          letter-spacing: -0.2px;
-          margin-bottom: 0.25rem;
-        }
-
-        .client-gst {
-          display: inline-block;
-          font-size: 0.75rem;
-          color: var(--color-secondary);
-          background: rgba(20, 184, 166, 0.1);
-          padding: 0.15rem 0.4rem;
-          border-radius: 4px;
-          font-weight: 600;
-        }
-
-        .client-actions {
-          display: flex;
-          gap: 0.5rem;
-        }
-
-        .action-icon-btn {
-          width: 2rem;
-          height: 2rem;
-          border-radius: var(--radius-sm);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          border: 1px solid var(--border-color);
-          background: rgba(255, 255, 255, 0.02);
-          color: var(--text-muted);
-        }
-
-        .action-icon-btn:hover {
-          color: var(--text-main);
-          border-color: rgba(255, 255, 255, 0.15);
-        }
-
-        .action-icon-btn.edit:hover {
-          background: rgba(99, 102, 241, 0.15);
-          color: var(--color-primary);
-          border-color: rgba(99, 102, 241, 0.2);
-        }
-
-        .action-icon-btn.delete:hover {
-          background: rgba(239, 68, 68, 0.15);
-          color: var(--color-danger);
-          border-color: rgba(239, 68, 68, 0.2);
-        }
-
-        .client-card-details {
-          display: flex;
-          flex-direction: column;
-          gap: 0.5rem;
-          font-size: 0.9rem;
-        }
-
-        .detail-item {
-          display: flex;
-          gap: 0.5rem;
-        }
-
-        .detail-item strong {
-          color: var(--text-muted);
-          min-width: 60px;
-        }
-
-        .detail-item.address {
-          flex-direction: column;
-          gap: 0.25rem;
-        }
-
-        .detail-item.address p {
-          white-space: pre-wrap;
-          line-height: 1.4;
-          color: var(--text-muted);
-          padding-left: 0.5rem;
-          border-left: 2px solid var(--border-color);
-        }
-
-        .client-card-footer {
-          border-top: 1px solid var(--border-color);
-          padding-top: 1rem;
-        }
-
-        .client-create-quote-link {
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-          color: var(--color-primary);
-          font-weight: 600;
-          font-size: 0.85rem;
-        }
-
-        .client-create-quote-link:hover {
-          color: var(--color-primary-hover);
-        }
-
-        .no-clients {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          gap: 1rem;
-          padding: 3rem;
-          text-align: center;
-          grid-column: span 2;
-          color: var(--text-muted);
-        }
-
-        .no-clients p {
-          max-width: 400px;
-        }
-
-        /* Modal Overlay & Form */
-        .modal-overlay {
-          position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          z-index: 200;
-          background: rgba(15, 23, 42, 0.8);
-          backdrop-filter: var(--glass-blur);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          padding: 1.5rem;
-        }
-
-        .modal-content {
-          width: 100%;
-          max-width: 600px;
-          padding: 2rem;
-          display: flex;
-          flex-direction: column;
-          gap: 1.5rem;
-          background: var(--bg-card);
-        }
-
-        .modal-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-        }
-
-        .modal-header h2 {
-          font-size: 1.25rem;
-          font-weight: 700;
-        }
-
-        .close-modal-btn {
-          color: var(--text-muted);
-        }
-
-        .close-modal-btn:hover {
-          color: var(--text-main);
-        }
-
-        .modal-form {
-          display: flex;
-          flex-direction: column;
-          gap: 1.25rem;
-        }
-
-        .form-row {
-          display: grid;
-          grid-template-columns: 1fr;
-          gap: 1rem;
-        }
-
-        @media (min-width: 600px) {
-          .form-row {
-            grid-template-columns: repeat(2, 1fr);
-          }
-        }
-
-        .form-group {
-          display: flex;
-          flex-direction: column;
-          gap: 0.4rem;
-        }
-
-        .form-group label {
-          font-size: 0.85rem;
-          font-weight: 600;
-          color: var(--text-muted);
-        }
-
-        .form-group input, 
-        .form-group textarea {
-          padding: 0.75rem 1rem;
-          background: rgba(255, 255, 255, 0.02);
-          border: 1px solid var(--border-color);
-          border-radius: var(--radius-sm);
-          color: var(--text-main);
-          font-size: 0.95rem;
-        }
-
-        [data-theme="light"] .form-group input, 
-        [data-theme="light"] .form-group textarea {
-          background: rgba(15, 23, 42, 0.02);
-        }
-
-        .modal-actions {
-          display: flex;
-          justify-content: flex-end;
-          gap: 1rem;
-          border-top: 1px solid var(--border-color);
-          padding-top: 1.25rem;
-          margin-top: 0.5rem;
-        }
-
-        .cancel-btn {
-          padding: 0.75rem 1.5rem;
-          border-radius: var(--radius-sm);
-          font-weight: 600;
-          font-size: 0.95rem;
-          border: 1px solid var(--border-color);
-          color: var(--text-muted);
-        }
-
-        .cancel-btn:hover {
-          color: var(--text-main);
-          background: rgba(255, 255, 255, 0.05);
-        }
-
-        .submit-btn {
-          padding: 0.75rem 1.5rem;
-          border-radius: var(--radius-sm);
-          font-weight: 600;
-          font-size: 0.95rem;
-          background: var(--color-primary);
-          color: white;
-        }
-
-        .submit-btn:hover {
-          background: var(--color-primary-hover);
-        }
-      `}</style>
     </div>
   );
 }

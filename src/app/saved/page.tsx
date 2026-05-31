@@ -31,8 +31,8 @@ export default function SavedPage() {
 
   if (!mounted) {
     return (
-      <div className="loading-container">
-        <div className="spinner"></div>
+      <div className="flex h-[50vh] items-center justify-center">
+        <div className="w-10 h-10 border-3 border-white/10 rounded-full border-t-primary animate-spin"></div>
       </div>
     );
   }
@@ -124,62 +124,77 @@ export default function SavedPage() {
   });
 
   return (
-    <div className="saved-page animate-fade-in">
-      <div className="saved-header-bar">
+    <div className="flex flex-col gap-6 w-full animate-fade-in">
+      <div className="flex flex-wrap items-center justify-between gap-4 mb-2">
         <div>
-          <h1>🗂 Saved Invoices & Bills</h1>
-          <p>Search, filter, duplicate, and manage all your billing and quotation files.</p>
+          <h1 className="text-3xl font-extrabold tracking-tight mb-1 text-text-main">🗂 Saved Invoices & Bills</h1>
+          <p className="text-text-muted text-sm">Search, filter, duplicate, and manage all your billing and quotation files.</p>
         </div>
-        <Link href="/create" className="new-btn">
+        <Link
+          href="/create"
+          className="flex items-center gap-2 bg-primary hover:bg-primary-hover text-white px-5 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200"
+        >
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          New Quotation
+          New Document
         </Link>
       </div>
 
       {/* Filters Dashboard */}
-      <div className="filters-container glass-panel">
+      <div className="glass-panel p-6 flex flex-col gap-5">
         {/* Search */}
-        <div className="search-bar">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <div className="flex items-center gap-3 px-4 py-2.5 border border-border-main rounded-lg bg-white/1 dark:bg-white/1 [data-theme=light]:bg-slate-900/1">
+          <svg className="text-text-muted shrink-0" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
           <input 
             type="text" 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search by ref number, client name, or total amount..." 
+            className="flex-1 bg-transparent text-text-main placeholder:text-text-muted text-sm outline-none border-none focus:ring-0"
           />
         </div>
 
         {/* Filter chips */}
-        <div className="filter-chips-row">
-          <div className="chip-group">
-            <span className="group-label">Type / Status:</span>
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider mr-2 shrink-0">Type / Status:</span>
             {(['all', 'quotation', 'running_bill', 'invoice', 'draft', 'sent', 'accepted', 'paid'] as FilterType[]).map((type) => (
               <button 
                 key={type} 
                 onClick={() => setTypeFilter(type)} 
-                className={`filter-chip ${typeFilter === type ? 'active' : ''}`}
+                className={`px-3.5 py-1.5 border border-border-main rounded-full text-xs font-semibold transition-all duration-200 cursor-pointer capitalize ${
+                  typeFilter === type
+                    ? 'bg-primary border-primary text-white'
+                    : 'text-text-muted bg-white/2 dark:bg-white/2 [data-theme=light]:bg-slate-900/2 hover:text-text-main hover:border-white/15'
+                }`}
               >
                 {type.replace('_', ' ')}
               </button>
             ))}
           </div>
 
-          <div className="chip-group">
-            <span className="group-label">Date Range:</span>
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider mr-2 shrink-0">Date Range:</span>
             {(['all', 'week', 'month'] as TimeFilter[]).map((time) => (
               <button 
                 key={time} 
                 onClick={() => setTimeFilter(time)} 
-                className={`filter-chip ${timeFilter === time ? 'active' : ''}`}
+                className={`px-3.5 py-1.5 border border-border-main rounded-full text-xs font-semibold transition-all duration-200 cursor-pointer ${
+                  timeFilter === time
+                    ? 'bg-primary border-primary text-white'
+                    : 'text-text-muted bg-white/2 dark:bg-white/2 [data-theme=light]:bg-slate-900/2 hover:text-text-main hover:border-white/15'
+                }`}
               >
                 {time === 'all' ? 'All Time' : time === 'week' ? 'This Week' : 'This Month'}
               </button>
             ))}
           </div>
 
-          <div className="chip-group">
-            <span className="group-label">Sort:</span>
-            <button onClick={() => setSortBy(sortBy === 'newest' ? 'oldest' : 'newest')} className="filter-chip active sort-chip">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider mr-2 shrink-0">Sort:</span>
+            <button
+              onClick={() => setSortBy(sortBy === 'newest' ? 'oldest' : 'newest')}
+              className="px-3.5 py-1.5 border border-secondary rounded-full text-xs font-semibold transition-all duration-200 cursor-pointer bg-secondary text-white"
+            >
               {sortBy === 'newest' ? 'Newest First ⬇' : 'Oldest First ⬆'}
             </button>
           </div>
@@ -187,40 +202,54 @@ export default function SavedPage() {
       </div>
 
       {/* Documents Grid */}
-      <div className="documents-list">
+      <div className="grid grid-cols-1 gap-5">
         {filteredQuotes.length > 0 ? (
           filteredQuotes.map((doc) => (
-            <div key={doc.id} className="doc-card glass-panel animate-fade-in">
-              <div className="doc-card-header">
-                <div>
-                  <span className="doc-ref">{doc.refNo}</span>
-                  <span className={`doc-type-badge ${doc.type}`}>
+            <div key={doc.id} className="glass-panel p-6 flex flex-col gap-5 animate-fade-in">
+              <div className="flex items-center justify-between border-b border-border-main pb-3">
+                <div className="flex items-center gap-3">
+                  <span className="font-bold text-lg text-text-main tracking-tight">{doc.refNo}</span>
+                  <span className={`text-[9px] font-extrabold uppercase px-2 py-0.5 rounded border tracking-wider ${
+                    doc.type === 'quotation'
+                      ? 'bg-primary/10 text-primary border-primary/20'
+                      : doc.type === 'running_bill'
+                      ? 'bg-secondary/10 text-secondary border-secondary/20'
+                      : 'bg-purple-500/10 text-purple-500 border-purple-500/20'
+                  }`}>
                     {doc.type.replace('_', ' ')}
                   </span>
                 </div>
-                <span className="doc-date">{formatDate(doc.date)}</span>
+                <span className="text-xs text-text-muted font-medium">{formatDate(doc.date)}</span>
               </div>
 
-              <div className="doc-card-body">
-                <div className="doc-client">
-                  <span className="label">Client</span>
-                  <span className="val">{doc.client.name}</span>
+              <div className="grid grid-cols-1 sm:grid-cols-[1.5fr_1fr] gap-5">
+                <div className="flex flex-col gap-1">
+                  <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider">Client</span>
+                  <span className="font-bold text-base text-text-main">{doc.client.name}</span>
                 </div>
                 
-                <div className="doc-amount-section">
-                  <span className="label">Total Amount</span>
-                  <span className="val tabular-nums">{formatCurrency(doc.total)}</span>
+                <div className="flex flex-col gap-1 items-start sm:items-end">
+                  <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider">Total Amount</span>
+                  <span className="text-xl font-extrabold text-secondary tabular-nums">{formatCurrency(doc.total)}</span>
                 </div>
               </div>
 
-              <div className="doc-card-footer">
+              <div className="border-t border-border-main pt-4 flex flex-wrap justify-between items-center gap-4">
                 {/* Status indicator */}
-                <div className="status-dropdown-wrapper">
-                  <span className={`status-badge ${doc.status}`}>{doc.status}</span>
+                <div className="relative flex items-center gap-2">
+                  <span className={`text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-full border tracking-wider ${
+                    doc.status === 'draft'
+                      ? 'bg-slate-500/10 text-slate-400 border-slate-500/20'
+                      : doc.status === 'sent'
+                      ? 'bg-blue-500/10 text-blue-400 border-blue-500/20'
+                      : doc.status === 'accepted'
+                      ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                      : 'bg-secondary/10 text-secondary border-secondary/20'
+                  }`}>{doc.status}</span>
                   <select 
                     value={doc.status}
                     onChange={(e) => handleStatusChange(doc.id, e.target.value as Quotation['status'])}
-                    className="status-selector"
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                   >
                     <option value="draft">Draft</option>
                     <option value="sent">Sent</option>
@@ -230,23 +259,39 @@ export default function SavedPage() {
                 </div>
 
                 {/* Document Actions */}
-                <div className="doc-actions">
-                  <Link href={`/preview/${doc.id}`} className="doc-action-btn view" title="Preview A4 Document">
+                <div className="flex flex-wrap items-center gap-2">
+                  <Link
+                    href={`/preview/${doc.id}`}
+                    className="flex items-center gap-1.5 px-3 py-1.5 border border-border-main bg-white/[0.01] dark:bg-white/[0.01] [data-theme=light]:bg-slate-900/[0.01] rounded-lg text-xs font-semibold text-text-muted transition-all duration-200 hover:bg-primary/10 hover:text-primary hover:border-primary/20"
+                    title="Preview A4 Document"
+                  >
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                     Preview
                   </Link>
 
-                  <Link href={`/create?id=${doc.id}`} className="doc-action-btn edit" title="Edit Content">
+                  <Link
+                    href={`/create?id=${doc.id}`}
+                    className="flex items-center gap-1.5 px-3 py-1.5 border border-border-main bg-white/[0.01] dark:bg-white/[0.01] [data-theme=light]:bg-slate-900/[0.01] rounded-lg text-xs font-semibold text-text-muted transition-all duration-200 hover:bg-secondary/10 hover:text-secondary hover:border-secondary/20"
+                    title="Edit Content"
+                  >
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
                     Edit
                   </Link>
 
-                  <button onClick={() => handleDuplicate(doc)} className="doc-action-btn duplicate" title="Duplicate Document">
+                  <button
+                    onClick={() => handleDuplicate(doc)}
+                    className="flex items-center gap-1.5 px-3 py-1.5 border border-border-main bg-white/[0.01] dark:bg-white/[0.01] [data-theme=light]:bg-slate-900/[0.01] rounded-lg text-xs font-semibold text-text-muted transition-all duration-200 hover:bg-purple-500/10 hover:text-purple-500 hover:border-purple-500/20"
+                    title="Duplicate Document"
+                  >
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
                     Duplicate
                   </button>
 
-                  <button onClick={() => handleDelete(doc.id, doc.refNo)} className="doc-action-btn delete" title="Delete Permanent">
+                  <button
+                    onClick={() => handleDelete(doc.id, doc.refNo)}
+                    className="flex items-center gap-1.5 px-3 py-1.5 border border-border-main bg-white/[0.01] dark:bg-white/[0.01] [data-theme=light]:bg-slate-900/[0.01] rounded-lg text-xs font-semibold text-text-muted transition-all duration-200 hover:bg-danger/10 hover:text-danger hover:border-danger/20"
+                    title="Delete Permanent"
+                  >
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
                     Delete
                   </button>
@@ -255,387 +300,18 @@ export default function SavedPage() {
             </div>
           ))
         ) : (
-          <div className="no-docs glass-panel">
+          <div className="flex flex-col items-center justify-center gap-5 p-16 text-center text-text-muted glass-panel">
             <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
-            <p>No invoices or quotations matched your selection. Create a new document to get started.</p>
-            <Link href="/create" className="new-btn">Create First Quotation</Link>
+            <p className="max-w-xs text-sm">No invoices or quotations matched your selection. Create a new document to get started.</p>
+            <Link
+              href="/create"
+              className="flex items-center gap-2 bg-primary hover:bg-primary-hover text-white px-5 py-2.5 rounded-lg font-semibold text-sm transition-all duration-200"
+            >
+              Create First Quotation
+            </Link>
           </div>
         )}
       </div>
-
-      <style jsx>{`
-        .loading-container {
-          display: flex;
-          height: 50vh;
-          align-items: center;
-          justify-content: center;
-        }
-
-        .spinner {
-          width: 2.5rem;
-          height: 2.5rem;
-          border: 3px solid rgba(255, 255, 255, 0.1);
-          border-radius: 50%;
-          border-top-color: var(--color-primary);
-          animation: spin 1s ease-in-out infinite;
-        }
-
-        @keyframes spin {
-          to { transform: rotate(360deg); }
-        }
-
-        .saved-page {
-          display: flex;
-          flex-direction: column;
-          gap: 1.5rem;
-          width: 100%;
-        }
-
-        .saved-header-bar {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          flex-wrap: wrap;
-          gap: 1rem;
-        }
-
-        .saved-header-bar h1 {
-          font-size: 1.8rem;
-          font-weight: 800;
-          letter-spacing: -0.5px;
-          margin-bottom: 0.25rem;
-        }
-
-        .saved-header-bar p {
-          color: var(--text-muted);
-          font-size: 0.95rem;
-        }
-
-        .new-btn {
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-          background: var(--color-primary);
-          color: white;
-          padding: 0.75rem 1.25rem;
-          border-radius: var(--radius-sm);
-          font-weight: 600;
-          font-size: 0.95rem;
-        }
-
-        .new-btn:hover {
-          background: var(--color-primary-hover);
-        }
-
-        /* Filters container */
-        .filters-container {
-          padding: 1.5rem;
-          display: flex;
-          flex-direction: column;
-          gap: 1.25rem;
-        }
-
-        .search-bar {
-          display: flex;
-          align-items: center;
-          gap: 0.75rem;
-          padding: 0.75rem 1rem;
-          border: 1px solid var(--border-color);
-          border-radius: var(--radius-sm);
-          background: rgba(255, 255, 255, 0.01);
-        }
-
-        [data-theme="light"] .search-bar {
-          background: rgba(15, 23, 42, 0.01);
-        }
-
-        .search-bar input {
-          flex: 1;
-          color: var(--text-main);
-          font-size: 0.95rem;
-        }
-
-        .filter-chips-row {
-          display: flex;
-          flex-direction: column;
-          gap: 1rem;
-        }
-
-        .chip-group {
-          display: flex;
-          flex-wrap: wrap;
-          align-items: center;
-          gap: 0.5rem;
-        }
-
-        .group-label {
-          font-size: 0.8rem;
-          font-weight: 600;
-          color: var(--text-muted);
-          margin-right: 0.5rem;
-          text-transform: uppercase;
-        }
-
-        .filter-chip {
-          padding: 0.35rem 0.75rem;
-          border-radius: 9999px;
-          border: 1px solid var(--border-color);
-          font-size: 0.8rem;
-          font-weight: 500;
-          color: var(--text-muted);
-          background: rgba(255, 255, 255, 0.02);
-          text-transform: capitalize;
-        }
-
-        .filter-chip:hover {
-          color: var(--text-main);
-          border-color: rgba(255, 255, 255, 0.15);
-        }
-
-        .filter-chip.active {
-          background: var(--color-primary);
-          color: white;
-          border-color: var(--color-primary);
-        }
-
-        .sort-chip.active {
-          background: var(--color-secondary);
-          border-color: var(--color-secondary);
-        }
-
-        /* Documents Grid */
-        .documents-list {
-          display: grid;
-          grid-template-columns: 1fr;
-          gap: 1.25rem;
-        }
-
-        .doc-card {
-          padding: 1.5rem;
-          display: flex;
-          flex-direction: column;
-          gap: 1.25rem;
-        }
-
-        .doc-card-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          border-bottom: 1px solid var(--border-color);
-          padding-bottom: 0.75rem;
-        }
-
-        .doc-ref {
-          font-weight: 700;
-          font-size: 1.1rem;
-          margin-right: 0.75rem;
-          letter-spacing: -0.2px;
-        }
-
-        .doc-type-badge {
-          font-size: 0.7rem;
-          font-weight: 700;
-          text-transform: uppercase;
-          padding: 0.15rem 0.45rem;
-          border-radius: 4px;
-          letter-spacing: 0.5px;
-        }
-
-        .doc-type-badge.quotation {
-          background: rgba(99, 102, 241, 0.12);
-          color: var(--color-primary);
-          border: 1px solid rgba(99, 102, 241, 0.2);
-        }
-
-        .doc-type-badge.running_bill {
-          background: rgba(20, 184, 166, 0.12);
-          color: var(--color-secondary);
-          border: 1px solid rgba(20, 184, 166, 0.2);
-        }
-
-        .doc-type-badge.invoice {
-          background: rgba(168, 85, 247, 0.12);
-          color: #a855f7;
-          border: 1px solid rgba(168, 85, 247, 0.2);
-        }
-
-        .doc-date {
-          font-size: 0.85rem;
-          color: var(--text-muted);
-          font-weight: 500;
-        }
-
-        .doc-card-body {
-          display: grid;
-          grid-template-columns: 1fr;
-          gap: 1.25rem;
-        }
-
-        @media (min-width: 600px) {
-          .doc-card-body {
-            grid-template-columns: 1.5fr 1fr;
-          }
-        }
-
-        .doc-client, .doc-amount-section {
-          display: flex;
-          flex-direction: column;
-          gap: 0.25rem;
-        }
-
-        .doc-client .label, .doc-amount-section .label {
-          font-size: 0.75rem;
-          font-weight: 600;
-          color: var(--text-muted);
-          text-transform: uppercase;
-        }
-
-        .doc-client .val {
-          font-weight: 600;
-          font-size: 1.05rem;
-        }
-
-        .doc-amount-section {
-          align-items: flex-start;
-        }
-
-        @media (min-width: 600px) {
-          .doc-amount-section {
-            align-items: flex-end;
-          }
-        }
-
-        .doc-amount-section .val {
-          font-size: 1.35rem;
-          font-weight: 800;
-          color: var(--color-secondary);
-        }
-
-        .doc-card-footer {
-          border-top: 1px solid var(--border-color);
-          padding-top: 1rem;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          flex-wrap: wrap;
-          gap: 1rem;
-        }
-
-        /* Status selector dropdown style */
-        .status-dropdown-wrapper {
-          position: relative;
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-        }
-
-        .status-badge {
-          font-size: 0.75rem;
-          font-weight: 700;
-          text-transform: uppercase;
-          padding: 0.25rem 0.6rem;
-          border-radius: 9999px;
-          border: 1px solid transparent;
-        }
-
-        .status-badge.draft {
-          background: rgba(148, 163, 184, 0.12);
-          color: #94a3b8;
-          border-color: rgba(148, 163, 184, 0.25);
-        }
-
-        .status-badge.sent {
-          background: rgba(59, 130, 246, 0.12);
-          color: #3b82f6;
-          border-color: rgba(59, 130, 246, 0.25);
-        }
-
-        .status-badge.accepted {
-          background: rgba(16, 185, 129, 0.12);
-          color: var(--color-success);
-          border-color: rgba(16, 185, 129, 0.25);
-        }
-
-        .status-badge.paid {
-          background: rgba(20, 184, 166, 0.12);
-          color: var(--color-secondary);
-          border-color: rgba(20, 184, 166, 0.25);
-        }
-
-        .status-selector {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          opacity: 0;
-          cursor: pointer;
-        }
-
-        .doc-actions {
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-          flex-wrap: wrap;
-        }
-
-        .doc-action-btn {
-          display: flex;
-          align-items: center;
-          gap: 0.35rem;
-          padding: 0.45rem 0.75rem;
-          border: 1px solid var(--border-color);
-          background: rgba(255, 255, 255, 0.01);
-          border-radius: var(--radius-sm);
-          font-size: 0.8rem;
-          font-weight: 600;
-          color: var(--text-muted);
-        }
-
-        .doc-action-btn:hover {
-          color: var(--text-main);
-          border-color: rgba(255, 255, 255, 0.15);
-        }
-
-        .doc-action-btn.view:hover {
-          background: rgba(99, 102, 241, 0.12);
-          color: var(--color-primary);
-          border-color: rgba(99, 102, 241, 0.2);
-        }
-
-        .doc-action-btn.edit:hover {
-          background: rgba(20, 184, 166, 0.12);
-          color: var(--color-secondary);
-          border-color: rgba(20, 184, 166, 0.2);
-        }
-
-        .doc-action-btn.duplicate:hover {
-          background: rgba(168, 85, 247, 0.12);
-          color: #a855f7;
-          border-color: rgba(168, 85, 247, 0.2);
-        }
-
-        .doc-action-btn.delete:hover {
-          background: rgba(239, 68, 68, 0.12);
-          color: var(--color-danger);
-          border-color: rgba(239, 68, 68, 0.2);
-        }
-
-        .no-docs {
-          padding: 4rem;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          gap: 1.25rem;
-          text-align: center;
-          color: var(--text-muted);
-        }
-
-        .no-docs p {
-          max-width: 400px;
-        }
-      `}</style>
     </div>
   );
 }
