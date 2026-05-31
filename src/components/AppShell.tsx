@@ -49,8 +49,8 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     <>
       {/* Global Header - Hidden during window.print() */}
       <header className="no-print sticky top-0 z-50 bg-card-bg/60 backdrop-blur-xl border-b border-border-main transition-colors duration-300">
-        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2.5 font-bold text-xl text-text-main group">
+        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between relative">
+          <Link href="/" className="flex items-center gap-2.5 font-bold text-xl text-text-main group shrink-0">
             <div className="w-9 h-9 rounded-lg bg-primary/15 flex items-center justify-center text-primary group-hover:bg-primary/25 transition-colors duration-300">
               <Zap size={20} strokeWidth={2.5} />
             </div>
@@ -60,8 +60,8 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             </div>
           </Link>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-1">
+          {/* Desktop Navigation - Centered absolutely */}
+          <nav className="hidden md:flex items-center gap-1 absolute left-1/2 -translate-x-1/2">
             {navItems.map((item) => {
               const active = pathname === item.path;
               const Icon = item.icon;
@@ -83,10 +83,10 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           </nav>
 
           {/* Controls bar */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 shrink-0">
             <button
               onClick={toggleTheme}
-              className="w-9 h-9 rounded-lg flex items-center justify-center text-text-muted border border-border-main bg-white/[0.02] hover:text-primary hover:bg-primary/8 hover:border-primary/20 transition-all duration-200"
+              className="w-9 h-9 rounded-lg flex items-center justify-center text-text-muted border border-border-main bg-white/[0.02] hover:text-primary hover:bg-primary/8 hover:border-primary/20 transition-all duration-200 cursor-pointer"
               aria-label="Toggle light/dark theme"
             >
               {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
@@ -95,7 +95,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             {/* Mobile Menu Toggle Button */}
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="flex md:hidden w-9 h-9 rounded-lg items-center justify-center text-text-muted border border-border-main bg-white/[0.02] hover:text-primary hover:bg-primary/8 transition-all duration-200"
+              className="flex md:hidden w-9 h-9 rounded-lg items-center justify-center text-text-muted border border-border-main bg-white/[0.02] hover:text-primary hover:bg-primary/8 transition-all duration-200 cursor-pointer"
               aria-label="Toggle menu"
             >
               {menuOpen ? <X size={20} /> : <Menu size={20} />}
