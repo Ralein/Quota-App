@@ -3,8 +3,8 @@ import "./globals.css";
 import AppShell from "@/components/AppShell";
 
 export const metadata: Metadata = {
-  title: "QuoteBuilder Pro - Quotation & Bill Generator",
-  description: "Generate professional running bills, invoices, and quotations on site instantly. Print to A4 PDF, download, and share offline-first.",
+  title: "NexaQuote — Professional Quotation & Bill Generator",
+  description: "Generate professional running bills, invoices, and quotations on site instantly. Print to A4 PDF, download, and share offline-first. Built for contractors & small businesses.",
 };
 
 export const viewport = {
@@ -27,7 +27,7 @@ export default function RootLayout({
             __html: `
               (function() {
                 try {
-                  var theme = localStorage.getItem('qb_theme') || 'dark';
+                  var theme = localStorage.getItem('nq_theme') || 'dark';
                   document.documentElement.setAttribute('data-theme', theme);
                 } catch (e) {}
               })();

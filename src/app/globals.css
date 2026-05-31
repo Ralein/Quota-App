@@ -1,65 +1,76 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 @import "tailwindcss";
-/* Trigger hot-reload with postcss.config.js active */
 
-
+/* ============================================================
+   NEXAQUOTE — OBSIDIAN AMBER THEME
+   ============================================================ */
 
 :root {
-  /* Color System */
-  --bg-app: #0f172a; /* Slate 900 */
-  --bg-card: rgba(30, 41, 59, 0.7); /* Slate 800 with transparency */
-  --bg-card-hover: rgba(30, 41, 59, 0.9);
-  --border-color: rgba(255, 255, 255, 0.08);
-  --border-color-focus: #6366f1; /* Indigo 500 */
-  
-  --color-primary: #6366f1; /* Indigo 500 */
-  --color-primary-hover: #4f46e5;
-  --color-secondary: #14b8a6; /* Teal 500 */
-  --color-secondary-hover: #0d9488;
-  
-  --text-main: #f8fafc; /* Slate 50 */
-  --text-muted: #94a3b8; /* Slate 400 */
-  --text-inverse: #0f172a;
-  
-  --color-success: #10b981; /* Emerald 500 */
-  --color-danger: #ef4444; /* Red 500 */
-  --color-warning: #f59e0b; /* Amber 500 */
-  
+  /* Color System — Dark Mode (Default) */
+  --bg-app: #0a0a0f;
+  --bg-card: rgba(20, 20, 30, 0.75);
+  --bg-card-hover: rgba(28, 28, 42, 0.9);
+  --border-color: rgba(255, 255, 255, 0.06);
+  --border-color-focus: #d4a853;
+
+  --color-primary: #d4a853;
+  --color-primary-hover: #c49a40;
+  --color-secondary: #6ec8c8;
+  --color-secondary-hover: #5ab8b8;
+
+  --text-main: #ededed;
+  --text-muted: #8a8a98;
+  --text-inverse: #0a0a0f;
+
+  --color-success: #4ade80;
+  --color-danger: #f87171;
+  --color-warning: #fbbf24;
+
   /* Layout Metrics */
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 16px;
-  --shadow-sm: 0 2px 8px -2px rgba(0, 0, 0, 0.2);
-  --shadow-md: 0 4px 20px -4px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 10px 30px -10px rgba(0, 0, 0, 0.6);
-  --glass-blur: blur(12px);
+  --shadow-sm: 0 2px 8px -2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 24px -6px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 12px 40px -12px rgba(0, 0, 0, 0.7);
+  --glass-blur: blur(14px);
+
+  /* Gold glow */
+  --glow-primary: 0 0 20px rgba(212, 168, 83, 0.15);
 }
 
 /* Light Mode Overrides */
 [data-theme="light"] {
-  --bg-app: #f1f5f9; /* Slate 100 */
-  --bg-card: rgba(255, 255, 255, 0.8);
+  --bg-app: #f5f3f0;
+  --bg-card: rgba(255, 255, 255, 0.85);
   --bg-card-hover: rgba(255, 255, 255, 0.95);
-  --border-color: rgba(15, 23, 42, 0.08);
-  --border-color-focus: #4f46e5;
-  
-  --color-primary: #4f46e5;
-  --color-primary-hover: #3730a3;
-  --color-secondary: #0d9488;
-  --color-secondary-hover: #0f766e;
-  
-  --text-main: #0f172a; /* Slate 900 */
-  --text-muted: #64748b; /* Slate 500 */
+  --border-color: rgba(0, 0, 0, 0.06);
+  --border-color-focus: #b8932f;
+
+  --color-primary: #b8932f;
+  --color-primary-hover: #a6822a;
+  --color-secondary: #4fada0;
+  --color-secondary-hover: #3f9d90;
+
+  --text-main: #1a1a1a;
+  --text-muted: #6b6b78;
   --text-inverse: #ffffff;
-  
-  --shadow-sm: 0 2px 8px -2px rgba(15, 23, 42, 0.08);
-  --shadow-md: 0 4px 20px -4px rgba(15, 23, 42, 0.12);
-  --shadow-lg: 0 10px 30px -10px rgba(15, 23, 42, 0.16);
+
+  --color-success: #22c55e;
+  --color-danger: #ef4444;
+  --color-warning: #eab308;
+
+  --shadow-sm: 0 2px 8px -2px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 24px -6px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 12px 40px -12px rgba(0, 0, 0, 0.12);
+
+  --glow-primary: 0 0 20px rgba(184, 147, 47, 0.1);
 }
 
+/* Tailwind v4 Theme Registration */
 @theme {
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  
+
   --color-primary: var(--color-primary);
   --color-primary-hover: var(--color-primary-hover);
   --color-secondary: var(--color-secondary);
@@ -77,6 +88,10 @@
   --color-border-focus: var(--border-color-focus);
 }
 
+/* ============================================================
+   BASE STYLES
+   ============================================================ */
+
 html, body {
   width: 100%;
   height: 100%;
@@ -93,17 +108,62 @@ body {
   min-height: 100vh;
 }
 
-/* Animations */
+/* Custom Scrollbar (dark mode) */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(212, 168, 83, 0.2);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(212, 168, 83, 0.4);
+}
+
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-.animate-fade-in {
-  animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 12px rgba(212, 168, 83, 0.15); }
+  50% { box-shadow: 0 0 24px rgba(212, 168, 83, 0.3); }
 }
 
-/* Glassmorphism Classes */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-fade-in {
+  animation: fadeSlideUp 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.animate-glow-pulse {
+  animation: glowPulse 2s ease-in-out infinite;
+}
+
+/* ============================================================
+   GLASS PANEL UTILITY
+   ============================================================ */
+
 @utility glass-panel {
   background: var(--bg-card);
   backdrop-filter: var(--glass-blur);
@@ -117,9 +177,9 @@ body {
 @utility glass-panel-hover {
   &:hover {
     background: var(--bg-card-hover);
-    border-color: rgba(255, 255, 255, 0.15);
+    border-color: rgba(212, 168, 83, 0.12);
     transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
+    box-shadow: var(--shadow-lg), var(--glow-primary);
   }
 }
 
@@ -128,23 +188,29 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
-/* Base styling overrides for inputs and active outlines */
-input:focus, select:focus, textarea:focus {
-  border-color: var(--border-color-focus) !important;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+/* Gold accent line */
+@utility gold-accent-top {
+  border-top: 2px solid var(--color-primary);
 }
 
-/* -------------------------------------------------------------
+/* ============================================================
+   BASE INPUT FOCUS
+   ============================================================ */
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--border-color-focus) !important;
+  box-shadow: 0 0 0 3px rgba(212, 168, 83, 0.12);
+}
+
+/* ============================================================
    PRINT MEDIA OVERRIDES (A4 Paper PDF Layout)
-   ------------------------------------------------------------- */
+   ============================================================ */
 @media print {
-  /* Set A4 sizing and zero margins */
   @page {
     size: A4 portrait;
     margin: 15mm 15mm 15mm 15mm;
   }
-  
-  /* Reset background and colors for clean printer output */
+
   html, body {
     background-color: #ffffff !important;
     color: #000000 !important;
@@ -156,20 +222,10 @@ input:focus, select:focus, textarea:focus {
     padding: 0 !important;
   }
 
-  /* Hide all interactive components */
-  nav, 
-  header, 
-  footer, 
-  .no-print, 
-  button, 
-  .toast, 
-  .action-buttons,
-  .settings-panel,
-  .company-setup-prompt {
+  nav, header, footer, .no-print, button, .toast, .action-buttons, .settings-panel, .company-setup-prompt {
     display: none !important;
   }
 
-  /* Target Print Container wrapper */
   .print-page-wrapper {
     display: block !important;
     width: 100% !important;
@@ -188,7 +244,7 @@ input:focus, select:focus, textarea:focus {
   .print-company-name {
     font-size: 20pt !important;
     font-weight: bold !important;
-    color: #d32f2f !important; /* Elegant red accent */
+    color: #b8932f !important;
     text-transform: uppercase !important;
     letter-spacing: 0.5px !important;
     margin-bottom: 1mm !important;
@@ -251,7 +307,6 @@ input:focus, select:focus, textarea:focus {
     text-transform: uppercase !important;
   }
 
-  /* Ruled Table Styling */
   .print-table {
     width: 100% !important;
     border-collapse: collapse !important;
@@ -272,41 +327,15 @@ input:focus, select:focus, textarea:focus {
     text-align: center !important;
   }
 
-  /* Precise columns alignment */
-  .print-col-sr {
-    width: 8% !important;
-    text-align: center !important;
-  }
-  .print-col-desc {
-    width: 47% !important;
-    text-align: left !important;
-  }
-  .print-col-qty {
-    width: 15% !important;
-    text-align: right !important;
-  }
-  .print-col-rate {
-    width: 15% !important;
-    text-align: right !important;
-  }
-  .print-col-amount {
-    width: 15% !important;
-    text-align: right !important;
-  }
+  .print-col-sr { width: 8% !important; text-align: center !important; }
+  .print-col-desc { width: 47% !important; text-align: left !important; }
+  .print-col-qty { width: 15% !important; text-align: right !important; }
+  .print-col-rate { width: 15% !important; text-align: right !important; }
+  .print-col-amount { width: 15% !important; text-align: right !important; }
 
-  .print-totals-row td {
-    border-top: 1.5pt solid #000000 !important;
-  }
-
-  .print-totals-label {
-    font-weight: bold !important;
-    text-align: right !important;
-  }
-
-  .print-totals-val {
-    font-weight: bold !important;
-    text-align: right !important;
-  }
+  .print-totals-row td { border-top: 1.5pt solid #000000 !important; }
+  .print-totals-label { font-weight: bold !important; text-align: right !important; }
+  .print-totals-val { font-weight: bold !important; text-align: right !important; }
 
   .print-words-box {
     font-size: 9.5pt !important;
@@ -335,10 +364,7 @@ input:focus, select:focus, textarea:focus {
     font-size: 9.5pt !important;
   }
 
-  .print-sign-thankyou {
-    font-weight: bold !important;
-    vertical-align: bottom !important;
-  }
+  .print-sign-thankyou { font-weight: bold !important; vertical-align: bottom !important; }
 
   .print-sign-area {
     text-align: right !important;
@@ -347,15 +373,8 @@ input:focus, select:focus, textarea:focus {
     align-items: flex-end !important;
   }
 
-  .print-sign-company {
-    font-weight: bold !important;
-    margin-bottom: 12mm !important;
-  }
-
-  .print-sign-img {
-    max-height: 45px !important;
-    margin-bottom: 2mm !important;
-  }
+  .print-sign-company { font-weight: bold !important; margin-bottom: 12mm !important; }
+  .print-sign-img { max-height: 45px !important; margin-bottom: 2mm !important; }
 
   .print-sign-label {
     font-size: 9pt !important;
