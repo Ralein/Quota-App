@@ -80,28 +80,36 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <>
       {/* Global Header - Hidden during window.print() */}
-      <header className="no-print header-nav">
-        <div className="nav-container">
-          <Link href="/" className="logo-brand">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--color-primary)' }}>
+      <header className="no-print sticky top-0 z-50 bg-card-bg/60 backdrop-blur-md border-b border-border-main transition-colors duration-200">
+        <div className="max-w-6xl mx-auto px-6 h-18 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-3 font-bold text-xl text-text-main">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-primary">
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
               <polyline points="14 2 14 8 20 8" />
               <line x1="16" y1="13" x2="8" y2="13" />
               <line x1="16" y1="17" x2="8" y2="17" />
               <line x1="10" y1="9" x2="8" y2="9" />
             </svg>
-            <div className="logo-text">
+            <div className="flex items-center gap-1.5">
               <span>QuoteBuilder</span>
-              <span className="logo-badge">Pro</span>
+              <span className="text-xs px-1.5 py-0.5 rounded bg-primary text-white font-extrabold uppercase tracking-wide">Pro</span>
             </div>
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="desktop-links">
+          <nav className="hidden md:flex items-center gap-6">
             {navItems.map((item) => {
               const active = pathname === item.path;
               return (
-                <Link key={item.path} href={item.path} className={`nav-link ${active ? 'active' : ''}`}>
+                <Link
+                  key={item.path}
+                  href={item.path}
+                  className={`flex items-center gap-2 text-sm font-medium px-3 py-2 rounded-lg border transition-all duration-200 ${
+                    active
+                      ? 'text-text-main bg-primary/10 border-primary/20'
+                      : 'text-text-muted hover:text-text-main hover:bg-white/5 border-transparent'
+                  }`}
+                >
                   {item.icon}
                   <span>{item.name}</span>
                 </Link>
@@ -110,8 +118,12 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           </nav>
 
           {/* Controls bar */}
-          <div className="nav-controls">
-            <button onClick={toggleTheme} className="control-btn" aria-label="Toggle light/dark theme">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={toggleTheme}
+              className="w-10 h-10 rounded-lg flex items-center justify-center text-text-muted border border-border-main bg-white/2 hover:text-text-main hover:bg-white/5 transition-all duration-200"
+              aria-label="Toggle light/dark theme"
+            >
               {theme === 'dark' ? (
                 // Sun Icon
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -127,7 +139,11 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             </button>
 
             {/* Mobile Menu Toggle Button */}
-            <button onClick={() => setMenuOpen(!menuOpen)} className="mobile-menu-toggle" aria-label="Toggle menu">
+            <button
+              onClick={() => setMenuOpen(!menuOpen)}
+              className="flex md:hidden w-10 h-10 rounded-lg items-center justify-center text-text-muted border border-border-main bg-white/2 hover:text-text-main hover:bg-white/5 transition-all duration-200"
+              aria-label="Toggle menu"
+            >
               {menuOpen ? (
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="18" y1="6" x2="6" y2="18" />
@@ -146,11 +162,20 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
         {/* Mobile Navigation Drawer */}
         {menuOpen && (
-          <div className="mobile-drawer animate-fade-in">
+          <div className="absolute top-18 left-0 right-0 bg-app-bg border-b border-border-main px-6 py-4 flex flex-col gap-3 shadow-lg md:hidden animate-fade-in z-50">
             {navItems.map((item) => {
               const active = pathname === item.path;
               return (
-                <Link key={item.path} href={item.path} className={`mobile-nav-link ${active ? 'active' : ''}`} onClick={() => setMenuOpen(false)}>
+                <Link
+                  key={item.path}
+                  href={item.path}
+                  className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium border transition-all duration-200 ${
+                    active
+                      ? 'text-text-main bg-primary/10 border-primary/20'
+                      : 'text-text-muted hover:text-text-main hover:bg-white/5 border-transparent'
+                  }`}
+                  onClick={() => setMenuOpen(false)}
+                >
                   {item.icon}
                   <span>{item.name}</span>
                 </Link>
@@ -161,10 +186,9 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       </header>
 
       {/* Main Content Area */}
-      <main className="app-main-content">
+      <main className="flex-1 flex flex-col w-full max-w-6xl mx-auto p-6">
         {children}
       </main>
-
     </>
   );
 }
