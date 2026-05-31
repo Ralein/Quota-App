@@ -5,7 +5,12 @@ import AppShell from "@/components/AppShell";
 export const metadata: Metadata = {
   title: "QuoteBuilder Pro - Quotation & Bill Generator",
   description: "Generate professional running bills, invoices, and quotations on site instantly. Print to A4 PDF, download, and share offline-first.",
-  viewport: "width=device-width, initial-scale=1, maximum-scale=5",
+};
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
 };
 
 export default function RootLayout({
